@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("CS789CryptographyProgram")]
+[assembly: AssemblyTitle("CryptographyBusiness")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("CS789CryptographyProgram")]
+[assembly: AssemblyProduct("CryptographyBusiness")]
 [assembly: AssemblyCopyright("Copyright ©  2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("51c8addf-b3f5-4ecf-9a4d-5d0e0d76de28")]
+[assembly: Guid("57726f0b-4f62-4663-af83-094a32573552")]
 
 // Version information for an assembly consists of the following four values:
 //

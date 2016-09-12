@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace CS789CryptographyProgram.Properties
+namespace CryptographyApp.Properties
 {
 
 
