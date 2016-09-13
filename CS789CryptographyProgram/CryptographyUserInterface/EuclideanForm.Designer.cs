@@ -35,6 +35,7 @@
 			this.label2 = new System.Windows.Forms.Label();
 			this.label3 = new System.Windows.Forms.Label();
 			this._submit = new System.Windows.Forms.Button();
+			this._reset = new System.Windows.Forms.Button();
 			this.SuspendLayout();
 			// 
 			// _firstValue
@@ -91,7 +92,7 @@
 			// _submit
 			// 
 			this._submit.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-			this._submit.Location = new System.Drawing.Point(14, 97);
+			this._submit.Location = new System.Drawing.Point(14, 143);
 			this._submit.Name = "_submit";
 			this._submit.Size = new System.Drawing.Size(180, 45);
 			this._submit.TabIndex = 6;
@@ -99,11 +100,23 @@
 			this._submit.UseVisualStyleBackColor = true;
 			this._submit.Click += new System.EventHandler(this.OnSubmit);
 			// 
+			// _reset
+			// 
+			this._reset.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+			this._reset.Location = new System.Drawing.Point(14, 92);
+			this._reset.Name = "_reset";
+			this._reset.Size = new System.Drawing.Size(180, 45);
+			this._reset.TabIndex = 7;
+			this._reset.Text = "Reset";
+			this._reset.UseVisualStyleBackColor = true;
+			this._reset.Click += new System.EventHandler(this.OnReset);
+			// 
 			// EuclideanForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(214, 154);
+			this.ClientSize = new System.Drawing.Size(214, 200);
+			this.Controls.Add(this._reset);
 			this.Controls.Add(this._submit);
 			this.Controls.Add(this.label3);
 			this.Controls.Add(this.label2);
@@ -117,6 +130,7 @@
 			this.Name = "EuclideanForm";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "EuclideanForm";
+			this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.OnKeyPress);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -131,5 +145,6 @@
 		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.Label label3;
 		private System.Windows.Forms.Button _submit;
+		private System.Windows.Forms.Button _reset;
 	}
 }
