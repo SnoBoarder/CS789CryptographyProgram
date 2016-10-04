@@ -29,6 +29,7 @@
 		private void InitializeComponent()
 		{
 			this._euclidean = new System.Windows.Forms.Button();
+			this.button1 = new System.Windows.Forms.Button();
 			this.SuspendLayout();
 			// 
 			// _euclidean
@@ -41,11 +42,22 @@
 			this._euclidean.UseVisualStyleBackColor = true;
 			this._euclidean.Click += new System.EventHandler(this.OnEuclideanClick);
 			// 
+			// button1
+			// 
+			this.button1.Location = new System.Drawing.Point(210, 12);
+			this.button1.Name = "button1";
+			this.button1.Size = new System.Drawing.Size(192, 63);
+			this.button1.TabIndex = 1;
+			this.button1.Text = "Fast Exponentiation Algorithm";
+			this.button1.UseVisualStyleBackColor = true;
+			this.button1.Click += new System.EventHandler(this.OnExponentiationClick);
+			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(773, 483);
+			this.Controls.Add(this.button1);
 			this.Controls.Add(this._euclidean);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
 			this.Name = "MainForm";
@@ -58,5 +70,6 @@
 		#endregion
 
 		private System.Windows.Forms.Button _euclidean;
+		private System.Windows.Forms.Button button1;
 	}
 }

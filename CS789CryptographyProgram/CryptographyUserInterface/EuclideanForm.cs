@@ -20,7 +20,7 @@ namespace CryptographyUserInterface
 
 		public void HandleEuclideanAlgorithm()
 		{
-			if (!ValidateInput(_firstValue, _secondValue))
+			if (!ValidateInput())
 				return;
 
 			int gcd;
@@ -39,15 +39,15 @@ namespace CryptographyUserInterface
 				_answer.Text = gcd.ToString();
 		}
 
-		private bool ValidateInput(TextBox firstVal, TextBox secondVal)
+		private bool ValidateInput()
 		{
-			if (firstVal.Text == string.Empty)
+			if (_firstValue.Text == string.Empty)
 			{
 				MessageBox.Show("First value needs a value");
 				return false;
 			}
 
-			if (secondVal.Text == string.Empty)
+			if (_secondValue.Text == string.Empty)
 			{
 				MessageBox.Show("Second value needs a value");
 				return false;

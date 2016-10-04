@@ -4,6 +4,9 @@ namespace CryptographyBusiness
 {
 	public static class AlgorithmManager
 	{
+
+		#region Fast Euclidean Algorithm
+
 		/// <summary>
 		/// Get the greatest common divisor using Euclidean's Algorithm
 		/// </summary>
@@ -51,7 +54,11 @@ namespace CryptographyBusiness
 			}
 		}
 
-		public struct EuclideanIteration
+		#endregion
+
+		#region Verbose Euclidean Algorithm
+
+		private struct EuclideanIteration
 		{
 			public int largeNum;
 			public int smallNum;
@@ -125,7 +132,7 @@ namespace CryptographyBusiness
 				euclideanIteration.largeNum = largeNum;
 				euclideanIteration.smallNum = smallNum;
 				euclideanIteration.remainder = largeNum % smallNum;
-				euclideanIteration.smallNumMultiplier = (largeNum - euclideanIteration.remainder) / smallNum;
+				euclideanIteration.smallNumMultiplier = (largeNum - euclideanIteration.remainder) / smallNum; // TOOD: Figure out how to optimize this division
 
 				euclideanIterations.Add(euclideanIteration);
 
@@ -203,5 +210,42 @@ namespace CryptographyBusiness
 			x_0 = -multiplierB;
 			y_0 = multiplierA;
 		}
+
+		#endregion
+
+		#region Fast Exponentiation Algorithm
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="x"></param>
+		/// <param name="e"></param>
+		/// <param name="m"></param>
+		/// <returns></returns>
+		public static int FastExponentiationAlgorithm(int x, int e, int m)
+		{
+			// start out at 1 and build up whenever e is ever odd
+			int answer = 1;
+
+			while (e > 0)
+			{
+				if (e % 2 == 1)
+				{
+					// e is odd! subtract one from e and multiply current answer by the current x
+					--e;
+					answer = (answer * x) % m;
+				}
+
+				// square X mod M
+				x = (x * x) % m;
+
+				// we know that e is even at this point, so divide it. continue dividing it until e is 0
+				e = e >> 1; // same as dividing by 2, but faster with bit shifting by 1
+			}
+
+			return answer;
+		}
+
+		#endregion
 	}
 }

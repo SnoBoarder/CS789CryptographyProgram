@@ -50,6 +50,12 @@
     <Compile Include="EuclideanForm.Designer.cs">
       <DependentUpon>EuclideanForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="FastExponentiationAlgorithm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FastExponentiationAlgorithm.Designer.cs">
+      <DependentUpon>FastExponentiationAlgorithm.cs</DependentUpon>
+    </Compile>
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -67,6 +73,9 @@
   <ItemGroup>
     <EmbeddedResource Include="EuclideanForm.resx">
       <DependentUpon>EuclideanForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FastExponentiationAlgorithm.resx">
+      <DependentUpon>FastExponentiationAlgorithm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>

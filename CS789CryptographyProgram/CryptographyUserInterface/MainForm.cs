@@ -16,9 +16,20 @@ namespace CryptographyUserInterface
 			dlg.ShowDialog();
 		}
 
+		public void ShowExponentiationForm()
+		{
+			FastExponentiationAlgorithm dlg = new FastExponentiationAlgorithm();
+			dlg.ShowDialog();
+		}
+
 		private void OnEuclideanClick(object sender, EventArgs e)
 		{
 			ShowEuclideanForm();
+		}
+
+		private void OnExponentiationClick(object sender, EventArgs e)
+		{
+			ShowExponentiationForm();
 		}
 	}
 }
