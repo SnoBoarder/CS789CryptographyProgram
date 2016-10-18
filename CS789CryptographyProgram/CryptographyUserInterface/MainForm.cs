@@ -22,7 +22,13 @@ namespace CryptographyUserInterface
 			dlg.ShowDialog();
 		}
 
-		private void OnEuclideanClick(object sender, EventArgs e)
+        public void ShowPrimitiveRootForm()
+        {
+            PrimitiveRootForm dlg = new PrimitiveRootForm();
+            dlg.ShowDialog();
+        }
+
+        private void OnEuclideanClick(object sender, EventArgs e)
 		{
 			ShowEuclideanForm();
 		}
@@ -31,5 +37,10 @@ namespace CryptographyUserInterface
 		{
 			ShowExponentiationForm();
 		}
-	}
+
+        private void OnPrimitiveRootClick(object sender, EventArgs e)
+        {
+            ShowPrimitiveRootForm();
+        }
+    }
 }
