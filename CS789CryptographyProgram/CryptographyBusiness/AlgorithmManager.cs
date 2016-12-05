@@ -428,6 +428,12 @@ namespace CryptographyBusiness
             }
         }
 
+        /// <summary>
+        /// http://mjs5.com/2016/02/23/c-miller-rabin-primality-test-class/
+        /// </summary>
+        /// <param name="candidate"></param>
+        /// <param name="confidence"></param>
+        /// <returns></returns>
         public static bool MillerRabinOptimal(long candidate, int confidence = 3)
         {
             switch (candidate)
@@ -635,6 +641,47 @@ namespace CryptographyBusiness
             }
 
             return true;
+        }
+
+        #endregion
+
+        #region Noar-Reingold Random Number Generator
+
+
+
+        #endregion
+
+        #region Blum-Blum-Shub Random Number Generator
+
+        public static Int64 GetRandomPrime(int range)
+        {
+            var val = (Int64)1;
+
+            while (!MillerRabinOptimal(val))
+                val = LongRandom(2, range); // define a larger range
+
+            return val;
+        }
+
+        public static long BlumBlumShubRandomNumberGenerator()
+        {
+            var p = GetRandomPrime(9999);
+            var q = GetRandomPrime(9999);
+
+            var n = p * q;
+
+            string bits = "";
+
+            // set seed_0
+            long seed = LongRandom(1, n);
+            bits = ((int)(seed % 2)).ToString();
+            for (int i = 1; i < 64; ++i) // cannot use "n" bits cuz... that's way too freaking big
+            {
+                seed = (seed * seed) % n; // using s_0 to then get s_1
+                bits += ((int)(seed % 2)).ToString(); // mod s_1
+            }
+
+            return Convert.ToInt64(bits, 2);
         }
 
         #endregion
