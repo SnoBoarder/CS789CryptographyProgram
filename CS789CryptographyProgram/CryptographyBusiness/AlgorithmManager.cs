@@ -70,7 +70,7 @@ namespace CryptographyBusiness
 		}
 
 		/// <summary>
-		/// 
+		/// TODO: Make sure to contain with appropriately defined modulo!
 		/// </summary>
 		/// <param name="m"></param>
 		/// <param name="n"></param>
@@ -258,8 +258,10 @@ namespace CryptographyBusiness
 		/// </summary>
 		/// <param name="val"></param>
 		/// <returns></returns>
-		public static int PrimitiveRootSearchAlgorithm(int val)
+		public static List<int> PrimitiveRootSearchAlgorithm(int val)
 		{
+            List<int> list = new List<int>();
+
 			// traverse from 2 to val - 1
 			for (int i = 2; i < val - 1; ++i)
 			{
@@ -281,14 +283,61 @@ namespace CryptographyBusiness
 
 				if (flag)
 				{
-					return i;
-				}
+                    //return i;
+                    list.Add(i);
+                }
 			}
 
-			return -1;
+			return list;
 		}
 
 		#endregion
+
+        public static void Ugh()
+        {
+            int start = 2;
+            int mod = 23;
+
+            int current = start;
+            double sqrt;
+
+            while (true)
+            {
+                sqrt = Math.Sqrt(current);
+                if (sqrt % 1 == 0)
+                {
+                    // whole number!
+                    current += mod;
+                    Console.WriteLine("Yes!: " + sqrt);
+                }
+                else
+                {
+                    current += mod;
+                    Console.WriteLine("No!: " + current);
+                }
+
+                if (sqrt > mod)
+                    break;
+            }
+        }
+
+        public static void Ugh2()
+        {
+            int check = 60;
+            int mod = 71;
+
+            int num = 1;
+
+            while (num < mod)
+            {
+                if ((num*num)%mod == check)
+                {
+                    Console.WriteLine("we found one: " + num);
+                }
+
+                num++;
+            }
+        }
 
 		#region Baby Step Giant Step Algorithm
 
@@ -331,7 +380,7 @@ namespace CryptographyBusiness
 
 			double tempA = a;
 			// traverse every possible i
-			for (int i = 0; i < m; ++i)
+			for (int i = 0; i <= m; ++i)
 			{
 				// traverse every possible j
 				for (int j = 0; j < m; ++j)

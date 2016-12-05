@@ -23,8 +23,8 @@ namespace CryptographyUserInterface
             if (!ValidateInput())
                 return;
 
-            int answer = AlgorithmManager.PrimitiveRootSearchAlgorithm(Convert.ToInt32(_input.Text));
-            _answer.Text = answer.ToString();
+            List<int> answers = AlgorithmManager.PrimitiveRootSearchAlgorithm(Convert.ToInt32(_input.Text));
+            _answer.Text = String.Join(",", answers.Select(x => x.ToString()).ToArray());
         }
 
         private bool ValidateInput()
