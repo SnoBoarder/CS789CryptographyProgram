@@ -23,10 +23,10 @@ namespace CryptographyUserInterface
 			if (!ValidateInput())
 				return;
 
-			int answer = AlgorithmManager.FastExponentiationAlgorithm(
-				Convert.ToInt32(_xInput.Text),
-				Convert.ToInt32(_eInput.Text),
-				Convert.ToInt32(_mInput.Text));
+			long answer = AlgorithmManager.FastExponentiationAlgorithm(
+				Convert.ToInt64(_xInput.Text),
+				Convert.ToInt64(_eInput.Text),
+				Convert.ToInt64(_mInput.Text));
 
 			_answer.Text = answer.ToString();
 		}

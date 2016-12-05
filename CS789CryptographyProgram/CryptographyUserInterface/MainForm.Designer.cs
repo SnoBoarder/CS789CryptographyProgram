@@ -31,6 +31,7 @@
             this._euclidean = new System.Windows.Forms.Button();
             this._fastExponentiation = new System.Windows.Forms.Button();
             this._primitiveRoot = new System.Windows.Forms.Button();
+            this._millerRabinTest = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // _euclidean
@@ -63,11 +64,22 @@
             this._primitiveRoot.UseVisualStyleBackColor = true;
             this._primitiveRoot.Click += new System.EventHandler(this.OnPrimitiveRootClick);
             // 
+            // _millerRabinTest
+            // 
+            this._millerRabinTest.Location = new System.Drawing.Point(12, 81);
+            this._millerRabinTest.Name = "_millerRabinTest";
+            this._millerRabinTest.Size = new System.Drawing.Size(192, 63);
+            this._millerRabinTest.TabIndex = 3;
+            this._millerRabinTest.Text = "Miller-Rabin Test";
+            this._millerRabinTest.UseVisualStyleBackColor = true;
+            this._millerRabinTest.Click += new System.EventHandler(this.OnMillerRabinTestClick);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(773, 483);
+            this.Controls.Add(this._millerRabinTest);
             this.Controls.Add(this._primitiveRoot);
             this.Controls.Add(this._fastExponentiation);
             this.Controls.Add(this._euclidean);
@@ -84,5 +96,6 @@
 		private System.Windows.Forms.Button _euclidean;
 		private System.Windows.Forms.Button _fastExponentiation;
         private System.Windows.Forms.Button _primitiveRoot;
+        private System.Windows.Forms.Button _millerRabinTest;
     }
 }

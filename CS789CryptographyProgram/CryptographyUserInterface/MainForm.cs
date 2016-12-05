@@ -28,6 +28,12 @@ namespace CryptographyUserInterface
             dlg.ShowDialog();
         }
 
+        public void ShowMillerRabinTestForm()
+        {
+            MillerRabinTestForm dlg = new MillerRabinTestForm();
+            dlg.ShowDialog();
+        }
+
         private void OnEuclideanClick(object sender, EventArgs e)
 		{
 			ShowEuclideanForm();
@@ -41,6 +47,11 @@ namespace CryptographyUserInterface
         private void OnPrimitiveRootClick(object sender, EventArgs e)
         {
             ShowPrimitiveRootForm();
+        }
+
+        private void OnMillerRabinTestClick(object sender, EventArgs e)
+        {
+            ShowMillerRabinTestForm();
         }
     }
 }
