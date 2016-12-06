@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Security.Cryptography;
+using System.Text;
 
 namespace CryptographyBusiness
 {
@@ -685,5 +686,27 @@ namespace CryptographyBusiness
         }
 
         #endregion
+
+        public static long DiffieHellmanKeyEncrypt(char message, int largePrime, int generator, int alicePrivate, int bobPublic)
+        {
+            long sharedSecretKey = FastExponentiationAlgorithm(bobPublic, alicePrivate, largePrime);
+            return (int)message * sharedSecretKey; // should be mod p, especially for LARGE PRIMES
+        }
+
+        public static char DiffieHellmanKeyDecrypt(long encryptedMsg, int largePrime, int generator, int bobPrivate, int alicePublic)
+        {
+            long sharedSecretKey = FastExponentiationAlgorithm(alicePublic, bobPrivate, largePrime);
+            return (char)(encryptedMsg / sharedSecretKey); // should be mod p, especially for LARGE PRIMES
+        }
+
+        public static string Encrypt(string text)
+        {
+            return Convert.ToBase64String(Encoding.Unicode.GetBytes(text));
+        }
+
+        public static string Decrypt(string text)
+        {
+            return Encoding.Unicode.GetString(Convert.FromBase64String(text));
+        }
     }
 }
