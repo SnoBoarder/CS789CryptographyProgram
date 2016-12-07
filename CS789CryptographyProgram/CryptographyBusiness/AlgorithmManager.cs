@@ -9,6 +9,39 @@ namespace CryptographyBusiness
 {
     public static class AlgorithmManager
     {
+        #region Mod Inverse
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="n"></param>
+        /// <returns></returns>
+        public static int ModInverse(int a, int n)
+        {
+            int i = n, v = 0, d = 1;
+
+            while (a > 0)
+            {
+                int t = i / a;
+                int x = a;
+
+                a = i % x;
+                i = x;
+                x = d;
+                d = v - t * x;
+                v = x;
+            }
+
+            v %= n;
+
+            if (v < 0)
+                v = (v + n) % n;
+
+            return v;
+        }
+
+        #endregion
 
         #region Fast Euclidean Algorithm
 
@@ -295,52 +328,6 @@ namespace CryptographyBusiness
 
         #endregion
 
-        public static void Ugh()
-        {
-            int start = 2;
-            int mod = 23;
-
-            int current = start;
-            double sqrt;
-
-            while (true)
-            {
-                sqrt = Math.Sqrt(current);
-                if (sqrt % 1 == 0)
-                {
-                    // whole number!
-                    current += mod;
-                    Console.WriteLine("Yes!: " + sqrt);
-                }
-                else
-                {
-                    current += mod;
-                    Console.WriteLine("No!: " + current);
-                }
-
-                if (sqrt > mod)
-                    break;
-            }
-        }
-
-        public static void Ugh2()
-        {
-            int check = 60;
-            int mod = 71;
-
-            int num = 1;
-
-            while (num < mod)
-            {
-                if ((num * num) % mod == check)
-                {
-                    Console.WriteLine("we found one: " + num);
-                }
-
-                num++;
-            }
-        }
-
         #region Baby Step Giant Step Algorithm
 
         /// <summary>
@@ -360,13 +347,13 @@ namespace CryptographyBusiness
 
             // m = floor(root(n))
             // i >= 0
-            // i < m
+            // i <= m
             // j >= 0
             // j < m
 
             Hashtable table = new Hashtable();
 
-            // get the ceiling square root of the provided prime
+            // get the floor square root of the provided prime
             int m = Convert.ToInt32(Math.Floor(Math.Sqrt(prime)));
 
             // traverse all options of power of j and store the pair
@@ -376,9 +363,10 @@ namespace CryptographyBusiness
                 Debug.WriteLine(j + "|" + table[j]);
             }
 
-            // keep track of b^(-1 * m) % prime
+            // cache b^(-1 * m) % prime
             int cachedBPowNegM = (int)FastExponentiationAlgorithm(ModInverse(b, prime), m, prime);
 
+            // cache every iteration of (a * cachedBPowNegM) % prime
             int cachedPowI;
             // traverse every possible i
             for (int i = 0; i <= m; ++i)
@@ -391,7 +379,7 @@ namespace CryptographyBusiness
                     // if we find a match for a given i and j, then return i * m + j
                     if (cachedPowI == (int)table[j])
                     {
-                        Debug.WriteLine(i + "*" + m + "+" + j);
+                        Console.WriteLine(i + "*" + m + "+" + j);
                         return i * m + j;
                     }
                 }
@@ -644,12 +632,6 @@ namespace CryptographyBusiness
 
         #endregion
 
-        #region Noar-Reingold Random Number Generator
-
-
-
-        #endregion
-
         #region Blum-Blum-Shub Random Number Generator
 
         public static Int64 GetRandomPrime(int range)
@@ -685,6 +667,40 @@ namespace CryptographyBusiness
 
         #endregion
 
+        #region Pollard's Rho Method
+
+        public static int PollardsRhoMethod(int n, int xDefault = 2)
+        {
+            int x = xDefault;
+            int y = x * x + 1; // unrolled version of x^2 + 1
+
+            int g;
+            while (true)
+            {
+                g = FastEuclideanAlgorithm(x - y, n);
+
+                if ((g > 1 && g < n) || g == 0)
+                {
+                    // we found a divisor
+                    return g;
+                }
+                else if (g >= n)
+                {
+                    // we failed. recursively try again with a different x default
+                    return PollardsRhoMethod(n, xDefault + 1);
+                }
+
+                // g equals 1
+
+                x = (x * x + 1) % n; // unrolled version of (x^2 + 1) % n
+                y = ((y * y + 1) * (y * y + 1) + 1) % n; // unrolled version of ((y^2 + 1)^2 + 1) % n
+            }
+        }
+
+        #endregion
+
+        #region Diffie Hellman
+
         public static long DiffieHellmanKeyEncrypt(int message, int prime, int generator, int alicePrivate, int bobPublic)
         {
             int sharedSecretKey = (int)FastExponentiationAlgorithm(bobPublic, alicePrivate, prime);
@@ -703,29 +719,9 @@ namespace CryptographyBusiness
             return DiffieHellmanKeyDecrypt(message, prime, generator, bobPrivate, alicePublic);
         }
 
-        public static int ModInverse(int a, int n)
-        {
-            int i = n, v = 0, d = 1;
+        #endregion
 
-            while (a > 0)
-            {
-                int t = i / a;
-                int x = a;
-
-                a = i % x;
-                i = x;
-                x = d;
-                d = v - t * x;
-                v = x;
-            }
-
-            v %= n;
-
-            if (v < 0)
-                v = (v + n) % n;
-
-            return v;
-        }
+        #region RSA
 
         /// <summary>
         /// TODO: Make sure whoever uses this has a correct e
@@ -756,41 +752,6 @@ namespace CryptographyBusiness
             return RSADecrypt(encryptedMessage, n, p, q, e);
         }
 
-        public static int PollardsRhoMethod(int n, int xDefault = 2)
-        {
-            int x = xDefault;
-            int y = x * x + 1; // unrolled version of x^2 + 1
-
-            int g;
-            while (true)
-            {
-                g = FastEuclideanAlgorithm(x - y, n);
-                if ((g > 1 && g < n) || g == 0)
-                {
-                    // we found a divisor
-                    return g;
-                }
-                else if (g >= n)
-                {
-                    // we failed. recursively try again with a different x default
-                    return PollardsRhoMethod(n, xDefault + 1);
-                }
-
-                // g equals 1
-
-                x = (x * x + 1) % n; // unrolled version of (x^2 + 1) % n
-                y = ((y * y + 1) * (y * y + 1) + 1) % n; // unrolled version of ((y^2 + 1)^2 + 1) % n
-            }
-        }
-
-        public static string Encrypt(string text)
-        {
-            return Convert.ToBase64String(Encoding.Unicode.GetBytes(text));
-        }
-
-        public static string Decrypt(string text)
-        {
-            return Encoding.Unicode.GetString(Convert.FromBase64String(text));
-        }
+        #endregion
     }
 }
