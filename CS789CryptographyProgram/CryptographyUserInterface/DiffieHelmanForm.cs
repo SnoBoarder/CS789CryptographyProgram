@@ -69,15 +69,11 @@ namespace CryptographyUserInterface
 
             int prime = Convert.ToInt32(_hackPrime.Text);
             int generator = Convert.ToInt32(_hackGenerator.Text);
-            int bobPublic = Convert.ToInt32(_hackBobPublic.Text);
             int alicePublic = Convert.ToInt32(_hackAlicePublic.Text);
+            int bobPublic= Convert.ToInt32(_hackBobPublic.Text);
             int message = Convert.ToInt32(_hackEncryptedMessage.Text);
 
-            // TODO: Fix Baby Step Giant Step Algorithm!
-            int bobPrivate = AlgorithmManager.BabyStepGiantStepAlgorithm(bobPublic, generator, prime);
-            string decryptedMessage = AlgorithmManager.DiffieHellmanKeyDecrypt(message, prime, generator, bobPrivate, alicePublic).ToString();
-
-            _hackOutput.Text = "Bob Private: " + bobPrivate + " | Message: " + decryptedMessage;
+            _hackOutput.Text = AlgorithmManager.DiffieHellmanKeyHack(message, prime, generator, alicePublic, bobPublic).ToString();
         }
 
         private bool ValidateEncrypt()
@@ -125,10 +121,10 @@ namespace CryptographyUserInterface
             if (_hackGenerator.Text == string.Empty)
                 return false;
 
-            if (_hackBobPublic.Text == string.Empty)
+            if (_hackAlicePublic.Text == string.Empty)
                 return false;
 
-            if (_hackAlicePublic.Text == string.Empty)
+            if (_hackBobPublic.Text == string.Empty)
                 return false;
 
             if (_hackEncryptedMessage.Text == string.Empty)

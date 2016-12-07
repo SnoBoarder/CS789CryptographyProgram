@@ -62,9 +62,9 @@
             this._hackEncryptedMessage = new System.Windows.Forms.TextBox();
             this.label15 = new System.Windows.Forms.Label();
             this.label16 = new System.Windows.Forms.Label();
-            this._hackAlicePublic = new System.Windows.Forms.TextBox();
-            this.label17 = new System.Windows.Forms.Label();
             this._hackBobPublic = new System.Windows.Forms.TextBox();
+            this.label17 = new System.Windows.Forms.Label();
+            this._hackAlicePublic = new System.Windows.Forms.TextBox();
             this.label18 = new System.Windows.Forms.Label();
             this._hackGenerator = new System.Windows.Forms.TextBox();
             this.label19 = new System.Windows.Forms.Label();
@@ -362,37 +362,37 @@
             this.label16.TabIndex = 80;
             this.label16.Text = "Hack (As Eve)";
             // 
-            // _hackAlicePublic
+            // _hackBobPublic
             // 
-            this._hackAlicePublic.Location = new System.Drawing.Point(562, 128);
-            this._hackAlicePublic.Name = "_hackAlicePublic";
-            this._hackAlicePublic.Size = new System.Drawing.Size(100, 20);
-            this._hackAlicePublic.TabIndex = 16;
+            this._hackBobPublic.Location = new System.Drawing.Point(562, 128);
+            this._hackBobPublic.Name = "_hackBobPublic";
+            this._hackBobPublic.Size = new System.Drawing.Size(100, 20);
+            this._hackBobPublic.TabIndex = 16;
             // 
             // label17
             // 
             this.label17.AutoSize = true;
             this.label17.Location = new System.Drawing.Point(461, 132);
             this.label17.Name = "label17";
-            this.label17.Size = new System.Drawing.Size(93, 13);
+            this.label17.Size = new System.Drawing.Size(89, 13);
             this.label17.TabIndex = 79;
-            this.label17.Text = "Alice\'s Public Key:";
+            this.label17.Text = "Bob\'s Public Key:";
             // 
-            // _hackBobPublic
+            // _hackAlicePublic
             // 
-            this._hackBobPublic.Location = new System.Drawing.Point(562, 102);
-            this._hackBobPublic.Name = "_hackBobPublic";
-            this._hackBobPublic.Size = new System.Drawing.Size(100, 20);
-            this._hackBobPublic.TabIndex = 15;
+            this._hackAlicePublic.Location = new System.Drawing.Point(562, 102);
+            this._hackAlicePublic.Name = "_hackAlicePublic";
+            this._hackAlicePublic.Size = new System.Drawing.Size(100, 20);
+            this._hackAlicePublic.TabIndex = 15;
             // 
             // label18
             // 
             this.label18.AutoSize = true;
             this.label18.Location = new System.Drawing.Point(461, 106);
             this.label18.Name = "label18";
-            this.label18.Size = new System.Drawing.Size(89, 13);
+            this.label18.Size = new System.Drawing.Size(93, 13);
             this.label18.TabIndex = 78;
-            this.label18.Text = "Bob\'s Public Key:";
+            this.label18.Text = "Alice\'s Public Key:";
             // 
             // _hackGenerator
             // 
@@ -437,9 +437,9 @@
             this.Controls.Add(this._hackEncryptedMessage);
             this.Controls.Add(this.label15);
             this.Controls.Add(this.label16);
-            this.Controls.Add(this._hackAlicePublic);
-            this.Controls.Add(this.label17);
             this.Controls.Add(this._hackBobPublic);
+            this.Controls.Add(this.label17);
+            this.Controls.Add(this._hackAlicePublic);
             this.Controls.Add(this.label18);
             this.Controls.Add(this._hackGenerator);
             this.Controls.Add(this.label19);
@@ -519,9 +519,9 @@
         private System.Windows.Forms.TextBox _hackEncryptedMessage;
         private System.Windows.Forms.Label label15;
         private System.Windows.Forms.Label label16;
-        private System.Windows.Forms.TextBox _hackAlicePublic;
-        private System.Windows.Forms.Label label17;
         private System.Windows.Forms.TextBox _hackBobPublic;
+        private System.Windows.Forms.Label label17;
+        private System.Windows.Forms.TextBox _hackAlicePublic;
         private System.Windows.Forms.Label label18;
         private System.Windows.Forms.TextBox _hackGenerator;
         private System.Windows.Forms.Label label19;

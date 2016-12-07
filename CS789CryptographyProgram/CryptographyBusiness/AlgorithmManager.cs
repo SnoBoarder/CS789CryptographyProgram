@@ -699,6 +699,12 @@ namespace CryptographyBusiness
             return (int)((encryptedMsg % prime) * ModInverse(sharedSecretKey, prime)) % prime;
         }
 
+        public static int DiffieHellmanKeyHack(long message, int prime, int generator, int alicePublic, int bobPublic)
+        {
+            int bobPrivate = BabyStepGiantStepAlgorithm(bobPublic, generator, prime);
+            return DiffieHellmanKeyDecrypt(message, prime, generator, bobPrivate, alicePublic);
+        }
+
         public static int ModInverse(int a, int n)
         {
             int i = n, v = 0, d = 1;
