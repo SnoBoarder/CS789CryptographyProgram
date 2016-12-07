@@ -3,24 +3,24 @@ using System.Windows.Forms;
 
 namespace CryptographyUserInterface
 {
-	public partial class MainForm : Form
-	{
-		public MainForm()
-		{
-			InitializeComponent();
-		}
+    public partial class MainForm : Form
+    {
+        public MainForm()
+        {
+            InitializeComponent();
+        }
 
-		public void ShowEuclideanForm()
-		{
-			EuclideanForm dlg = new EuclideanForm();
-			dlg.ShowDialog();
-		}
+        public void ShowEuclideanForm()
+        {
+            EuclideanForm dlg = new EuclideanForm();
+            dlg.ShowDialog();
+        }
 
-		public void ShowExponentiationForm()
-		{
-			FastExponentiationAlgorithm dlg = new FastExponentiationAlgorithm();
-			dlg.ShowDialog();
-		}
+        public void ShowExponentiationForm()
+        {
+            FastExponentiationAlgorithm dlg = new FastExponentiationAlgorithm();
+            dlg.ShowDialog();
+        }
 
         public void ShowPrimitiveRootForm()
         {
@@ -40,15 +40,21 @@ namespace CryptographyUserInterface
             dlg.ShowDialog();
         }
 
-        private void OnEuclideanClick(object sender, EventArgs e)
-		{
-			ShowEuclideanForm();
-		}
+        public void ShowRSAForm()
+        {
+            RSAForm dlg = new RSAForm();
+            dlg.ShowDialog();
+        }
 
-		private void OnExponentiationClick(object sender, EventArgs e)
-		{
-			ShowExponentiationForm();
-		}
+        private void OnEuclideanClick(object sender, EventArgs e)
+        {
+            ShowEuclideanForm();
+        }
+
+        private void OnExponentiationClick(object sender, EventArgs e)
+        {
+            ShowExponentiationForm();
+        }
 
         private void OnPrimitiveRootClick(object sender, EventArgs e)
         {
@@ -63,6 +69,11 @@ namespace CryptographyUserInterface
         private void OnDiffieHelmanClick(object sender, EventArgs e)
         {
             ShowDiffieHelmanForm();
+        }
+
+        private void OnRSAClick(object sender, EventArgs e)
+        {
+            ShowRSAForm();
         }
     }
 }

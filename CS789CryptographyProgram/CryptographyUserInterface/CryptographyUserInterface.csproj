@@ -44,6 +44,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="RSAForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="RSAForm.Designer.cs">
+      <DependentUpon>RSAForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="DiffieHelmanForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -89,6 +95,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="RSAForm.resx">
+      <DependentUpon>RSAForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="DiffieHelmanForm.resx">
       <DependentUpon>DiffieHelmanForm.cs</DependentUpon>
     </EmbeddedResource>

@@ -723,6 +723,62 @@ namespace CryptographyBusiness
             return v;
         }
 
+        /// <summary>
+        /// TODO: Make sure whoever uses this has a correct e
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="n"></param>
+        /// <param name="e"></param>
+        /// <returns></returns>
+        public static int RSAEncrypt(int message, int n, int e)
+        {
+            return (int)FastExponentiationAlgorithm(message, e, n);
+        }
+
+        public static int RSADecrypt(int encryptedMessage, int n, int p, int q, int e)
+        {
+            int phiN = (p - 1) * (q - 1);
+            int d = ModInverse(e, phiN);
+
+            return (int)FastExponentiationAlgorithm(encryptedMessage, d, n);
+        }
+
+        public static int RSAHack(int encryptedMessage, int n, int e)
+        {
+            // find the factors of "n"
+            int p = PollardsRhoMethod(n);
+            int q = n / p;
+
+            return RSADecrypt(encryptedMessage, n, p, q, e);
+        }
+
+        public static int PollardsRhoMethod(int n, int xDefault = 2)
+        {
+            int x = xDefault;
+            int y = x * x + 1; // unrolled version of x^2 + 1
+
+            int g;
+            while (true)
+            {
+                g = FastEuclideanAlgorithm(x - y, n);
+                if ((g > 1 && g < n) || g == 0)
+                {
+                    // we found a divisor
+                    return g;
+                }
+                else if (g >= n)
+                {
+                    // we failed. recursively try again with a different x default
+                    return PollardsRhoMethod(n, xDefault + 1);
+                }
+
+                // g equals 1
+
+                x = (x * x + 1) % n; // unrolled version of (x^2 + 1) % n
+                y = ((y * y + 1) * (y * y + 1) + 1) % n; // unrolled version of ((y^2 + 1)^2 + 1) % n
+            }
+        }
+
         public static string Encrypt(string text)
         {
             return Convert.ToBase64String(Encoding.Unicode.GetBytes(text));
