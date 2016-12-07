@@ -34,6 +34,12 @@ namespace CryptographyUserInterface
             dlg.ShowDialog();
         }
 
+        public void ShowDiffieHelmanForm()
+        {
+            DiffieHelmanForm dlg = new DiffieHelmanForm();
+            dlg.ShowDialog();
+        }
+
         private void OnEuclideanClick(object sender, EventArgs e)
 		{
 			ShowEuclideanForm();
@@ -52,6 +58,11 @@ namespace CryptographyUserInterface
         private void OnMillerRabinTestClick(object sender, EventArgs e)
         {
             ShowMillerRabinTestForm();
+        }
+
+        private void OnDiffieHelmanClick(object sender, EventArgs e)
+        {
+            ShowDiffieHelmanForm();
         }
     }
 }

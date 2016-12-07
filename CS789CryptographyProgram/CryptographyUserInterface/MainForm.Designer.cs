@@ -32,6 +32,7 @@
             this._fastExponentiation = new System.Windows.Forms.Button();
             this._primitiveRoot = new System.Windows.Forms.Button();
             this._millerRabinTest = new System.Windows.Forms.Button();
+            this.button1 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // _euclidean
@@ -74,11 +75,22 @@
             this._millerRabinTest.UseVisualStyleBackColor = true;
             this._millerRabinTest.Click += new System.EventHandler(this.OnMillerRabinTestClick);
             // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(12, 408);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(192, 63);
+            this.button1.TabIndex = 4;
+            this.button1.Text = "Diffie-Helman";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.OnDiffieHelmanClick);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(773, 483);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this._millerRabinTest);
             this.Controls.Add(this._primitiveRoot);
             this.Controls.Add(this._fastExponentiation);
@@ -97,5 +109,6 @@
 		private System.Windows.Forms.Button _fastExponentiation;
         private System.Windows.Forms.Button _primitiveRoot;
         private System.Windows.Forms.Button _millerRabinTest;
+        private System.Windows.Forms.Button button1;
     }
 }

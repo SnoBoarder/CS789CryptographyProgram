@@ -687,16 +687,40 @@ namespace CryptographyBusiness
 
         #endregion
 
-        public static long DiffieHellmanKeyEncrypt(char message, int largePrime, int generator, int alicePrivate, int bobPublic)
+        public static long DiffieHellmanKeyEncrypt(int message, int prime, int generator, int alicePrivate, int bobPublic)
         {
-            long sharedSecretKey = FastExponentiationAlgorithm(bobPublic, alicePrivate, largePrime);
-            return (int)message * sharedSecretKey; // should be mod p, especially for LARGE PRIMES
+            int sharedSecretKey = (int)FastExponentiationAlgorithm(bobPublic, alicePrivate, prime);
+            return (message * sharedSecretKey) % prime;
         }
 
-        public static char DiffieHellmanKeyDecrypt(long encryptedMsg, int largePrime, int generator, int bobPrivate, int alicePublic)
+        public static int DiffieHellmanKeyDecrypt(long encryptedMsg, int prime, int generator, int bobPrivate, int alicePublic)
         {
-            long sharedSecretKey = FastExponentiationAlgorithm(alicePublic, bobPrivate, largePrime);
-            return (char)(encryptedMsg / sharedSecretKey); // should be mod p, especially for LARGE PRIMES
+            int sharedSecretKey = (int)FastExponentiationAlgorithm(alicePublic, bobPrivate, prime);
+            return (int)((encryptedMsg % prime) * ModInverse(sharedSecretKey, prime)) % prime;
+        }
+
+        public static int ModInverse(int a, int n)
+        {
+            int i = n, v = 0, d = 1;
+
+            while (a > 0)
+            {
+                int t = i / a;
+                int x = a;
+
+                a = i % x;
+                i = x;
+                x = d;
+                d = v - t * x;
+                v = x;
+            }
+
+            v %= n;
+
+            if (v < 0)
+                v = (v + n) % n;
+
+            return v;
         }
 
         public static string Encrypt(string text)

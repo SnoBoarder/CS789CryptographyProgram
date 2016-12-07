@@ -44,6 +44,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DiffieHelmanForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DiffieHelmanForm.Designer.cs">
+      <DependentUpon>DiffieHelmanForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="EuclideanForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -83,6 +89,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="DiffieHelmanForm.resx">
+      <DependentUpon>DiffieHelmanForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="EuclideanForm.resx">
       <DependentUpon>EuclideanForm.cs</DependentUpon>
     </EmbeddedResource>
