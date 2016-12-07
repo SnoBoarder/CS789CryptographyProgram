@@ -344,7 +344,6 @@ namespace CryptographyBusiness
         #region Baby Step Giant Step Algorithm
 
         /// <summary>
-        /// TODO: FIX THIS
         /// b^l = a. finding l
         /// 
         /// log_b a % prime = l
@@ -359,7 +358,7 @@ namespace CryptographyBusiness
         {
             // b^(im+j)
 
-            // m = ceil(root(n))
+            // m = floor(root(n))
             // i >= 0
             // i < m
             // j >= 0
@@ -368,35 +367,34 @@ namespace CryptographyBusiness
             Hashtable table = new Hashtable();
 
             // get the ceiling square root of the provided prime
-            int m = Convert.ToInt32(Math.Ceiling(Math.Sqrt(prime)));
+            int m = Convert.ToInt32(Math.Floor(Math.Sqrt(prime)));
 
             // traverse all options of power of j and store the pair
             for (int j = 0; j < m; ++j)
             {
-                table[j] = Math.Pow(b, j) % prime;
+                table[j] = (int)FastExponentiationAlgorithm(b, j, prime);
                 Debug.WriteLine(j + "|" + table[j]);
             }
 
             // keep track of b^(-1 * m) % prime
-            double cachedBPowNegM = Math.Pow(b, -m) % prime;
+            int cachedBPowNegM = (int)FastExponentiationAlgorithm(ModInverse(b, prime), m, prime);
 
-            double tempA = a;
+            int cachedPowI;
             // traverse every possible i
             for (int i = 0; i <= m; ++i)
             {
+                cachedPowI = ((int)FastExponentiationAlgorithm(cachedBPowNegM, i, prime) * a) % prime;
+
                 // traverse every possible j
-                for (int j = 0; j < m; ++j)
+                for (int j = 0; j < table.Count; ++j)
                 {
-                    // if we find a match for a given i and j, then return i *m + j
-                    if ((tempA * Math.Pow(cachedBPowNegM, i)) % prime == (double)table[j])
+                    // if we find a match for a given i and j, then return i * m + j
+                    if (cachedPowI == (int)table[j])
                     {
                         Debug.WriteLine(i + "*" + m + "+" + j);
                         return i * m + j;
                     }
                 }
-
-                // 
-                tempA = tempA * cachedBPowNegM;
             }
 
             return -1;
