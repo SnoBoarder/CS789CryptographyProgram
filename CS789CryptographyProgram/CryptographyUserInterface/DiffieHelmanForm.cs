@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static CryptographyBusiness.AlgorithmManager;
 
 namespace CryptographyUserInterface
 {
@@ -33,6 +34,29 @@ namespace CryptographyUserInterface
                 e.Handled = true;
             }
         }
+
+		private void OnGenerateClick(object sender, EventArgs e)
+		{
+			/*DiffieHellmanKey dhk = AlgorithmManager.DiffieHellmanKeyGenerate();
+
+			_generateOutput.Text = "prime: " + dhk.prime + " | generator: " + dhk.generator + " | private: " + dhk.alicePrivate + " | public: " + dhk.alicePublic;
+
+			// just unit test everything here:
+			_encryptPrime.Text = dhk.prime.ToString();
+			_encryptGenerator.Text = dhk.generator.ToString();
+			_encryptAlicePrivate.Text = dhk.alicePrivate.ToString();
+			_encryptBobPublic.Text = dhk.bobPublic.ToString();
+
+			_decryptPrime.Text = dhk.prime.ToString();
+			_decryptGenerator.Text = dhk.generator.ToString();
+			_decryptBobPrivate.Text = dhk.bobPrivate.ToString();
+			_decryptAlicePublic.Text = dhk.alicePublic.ToString();
+
+			_hackPrime.Text = dhk.prime.ToString();
+			_hackGenerator.Text = dhk.generator.ToString();
+			_hackAlicePublic.Text = dhk.alicePublic.ToString();
+			_hackBobPublic.Text = dhk.bobPublic.ToString();*/
+		}
 
         private void OnEncryptSubmitClick(object sender, EventArgs e)
         {
