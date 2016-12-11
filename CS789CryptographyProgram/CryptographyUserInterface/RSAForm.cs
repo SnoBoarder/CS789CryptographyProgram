@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -34,12 +35,35 @@ namespace CryptographyUserInterface
             }
         }
 
-        private void OnEncryptSubmitClick(object sender, EventArgs eventArgs)
+		private void OnGenerateClick(object sender, EventArgs eventArgs)
+		{
+			short p;
+			short q;
+			int n;
+			int e;
+
+			AlgorithmManager.GenerateCompositeRSANumber(out n, out p, out q, out e);
+
+			_generateOutput.Text = "n: " + n + " | p,q: " + p + "," + q + " | e: " + e;
+
+			_encryptComposite.Text = n.ToString();
+			_encryptBobEncryption.Text = e.ToString();
+
+			_decryptComposite.Text = n.ToString();
+			_decryptBobEncryption.Text = e.ToString();
+			_decryptBobP.Text = p.ToString();
+			_decryptBobQ.Text = q.ToString();
+
+			_hackComposite.Text = n.ToString();
+			_hackBobsEncryption.Text = e.ToString();
+		}
+
+		private void OnEncryptSubmitClick(object sender, EventArgs eventArgs)
         {
             if (!ValidateEncrypt())
                 return;
 
-            int n = Convert.ToInt32(_encryptPrime.Text);
+            int n = Convert.ToInt32(_encryptComposite.Text);
             int e = Convert.ToInt32(_encryptBobEncryption.Text);
             int plainMessage = Convert.ToInt32(_encryptMessage.Text);
 
@@ -51,7 +75,7 @@ namespace CryptographyUserInterface
             if (!ValidateDecrypt())
                 return;
 
-            int n = Convert.ToInt32(_decryptPrime.Text);
+            int n = Convert.ToInt32(_decryptComposite.Text);
             int e = Convert.ToInt32(_decryptBobEncryption.Text);
             int p = Convert.ToInt32(_decryptBobP.Text);
             int q = Convert.ToInt32(_decryptBobQ.Text);
@@ -65,7 +89,7 @@ namespace CryptographyUserInterface
             if (!ValidateHack())
                 return;
 
-            int n = Convert.ToInt32(_hackPrime.Text);
+            int n = Convert.ToInt32(_hackComposite.Text);
             int e = Convert.ToInt32(_hackBobsEncryption.Text);
             int message = Convert.ToInt32(_hackEncryptedMessage.Text);
 
@@ -74,7 +98,7 @@ namespace CryptographyUserInterface
 
         private bool ValidateEncrypt()
         {
-            if (_encryptPrime.Text == string.Empty)
+            if (_encryptComposite.Text == string.Empty)
                 return false;
 
             if (_encryptBobEncryption.Text == string.Empty)
@@ -88,7 +112,7 @@ namespace CryptographyUserInterface
 
         private bool ValidateDecrypt()
         {
-            if (_decryptPrime.Text == string.Empty)
+            if (_decryptComposite.Text == string.Empty)
                 return false;
 
             if (_decryptBobEncryption.Text == string.Empty)
@@ -105,7 +129,7 @@ namespace CryptographyUserInterface
 
         private bool ValidateHack()
         {
-            if (_hackPrime.Text == string.Empty)
+            if (_hackComposite.Text == string.Empty)
                 return false;
 
             if (_hackBobsEncryption.Text == string.Empty)
@@ -119,5 +143,5 @@ namespace CryptographyUserInterface
 
             return true;
         }
-    }
+	}
 }

@@ -255,15 +255,28 @@ namespace CryptographyBusiness
 
 		#region Mod Inverse
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="a"></param>
-		/// <param name="n"></param>
-		/// <returns></returns>
-		public static BigInteger ModInverse(int a, int n)
+		public static BigInteger ModInverse(BigInteger a, BigInteger n)
 		{
-			return FastExponentiationAlgorithm(a, n - 2, n);
+			BigInteger i = n, v = 0, d = 1;
+
+			while (a > 0)
+			{
+				BigInteger t = i / a;
+				BigInteger x = a;
+
+				a = i % x;
+				i = x;
+				x = d;
+				d = v - t * x;
+				v = x;
+			}
+
+			v %= n;
+
+			if (v < 0)
+				v = (v + n) % n;
+
+			return v;
 		}
 
 		#endregion
@@ -379,7 +392,6 @@ namespace CryptographyBusiness
 		#region Miller-Rabin Test Optimal
 
 		/// <summary>
-		/// http://mjs5.com/2016/02/23/c-miller-rabin-primality-test-class/
 		/// </summary>
 		/// <param name="candidate"></param>
 		/// <param name="confidence"></param>
@@ -614,13 +626,18 @@ namespace CryptographyBusiness
 
 		#region Blum-Blum-Shub Random Number Generator
 
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="bitCount"></param>
+		/// <returns></returns>
 		public static int BlumBlumShubRandomNumberGenerator(int bitCount = 32)
 		{
 			if (bitCount > 32)
 				bitCount = 32; // cannot have an int32 greater than 32 bits. set it to 32
 
-			var p = GetRandomPrimeBasic(Int16.MaxValue);
-			var q = GetRandomPrimeBasic(Int16.MaxValue);
+			int p = GetRandomPrimeBasic(Int16.MaxValue);
+			int q = GetRandomPrimeBasic(Int16.MaxValue);
 
 			var n = p * q;
 
@@ -635,27 +652,49 @@ namespace CryptographyBusiness
 				bits += ((int)(seed % 2)).ToString(); // mod s_1
 			}
 
-			return Convert.ToInt32(bits, 2);
+			BigInteger answer = Convert.ToInt32(bits, 2);
+
+			if (answer < 0)
+				answer = MathMod(BigInteger.Add(answer, int.MaxValue), int.MaxValue);
+
+			return (int)answer;
 		}
 
-		#endregion
-
-		#region Random Prime Blum-Blum-Shub
-
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="bitCount"></param>
+		/// <returns></returns>
 		public static int RandomPrimeBlumBlumShub(int bitCount)
 		{
-			int prime = 4;
+			if (bitCount > 32)
+				bitCount = 32;
 
-			while (!MillerRabinOptimal(prime))
+			BigInteger prime = 4;
+
+			while (!MillerRabinOptimal((long)prime))
+			{
 				prime = BlumBlumShubRandomNumberGenerator(bitCount);
 
-			return prime;
+				if (bitCount <= 16)
+					prime = MathMod(BigInteger.Add(prime, Int16.MaxValue), Int16.MaxValue);
+				else if (bitCount <= 32)
+					prime = MathMod(BigInteger.Add(prime, Int32.MaxValue), Int32.MaxValue);
+			}
+
+			return (int)prime;
 		}
 
 		#endregion
 
 		#region Pollard's Rho Method
 
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="n"></param>
+		/// <param name="xDefault"></param>
+		/// <returns></returns>
 		public static int PollardsRhoMethod(int n, int xDefault = 2)
 		{
 			int x = xDefault;
@@ -706,8 +745,32 @@ namespace CryptographyBusiness
 
 		#endregion
 
+		#region Random Relatively Prime Number
+
+		public static int RandomRelativelyPrimeNumber(int number)
+		{
+			int answer = -1;
+
+			while (answer == -1 || FastEuclideanAlgorithm(answer, number) != 1)
+			{
+				answer = BlumBlumShubRandomNumberGenerator() % number;
+
+				if (answer < 0)
+				{
+					answer = (answer + number) % number;
+				}
+			}
+
+			return answer;
+		}
+
+		#endregion
+
 		#region Diffie Hellman
 
+		/// <summary>
+		/// Data structure that owns the Diffie Hellman Keys. Bob's public and private keys are randomly generated purely for testing purposes.
+		/// </summary>
 		public struct DiffieHellmanKey
 		{
 			public int prime;
@@ -719,6 +782,11 @@ namespace CryptographyBusiness
 			public int bobPublic;
 		}
 
+		/// <summary>
+		/// Generate the keys based on the bitcount provided
+		/// </summary>
+		/// <param name="bitCount">Represents the number of bits to generate the prime with (between 1-32).</param>
+		/// <returns>The keys</returns>
 		public static DiffieHellmanKey DiffieHellmanKeyGenerate(int bitCount)
 		{
 			DiffieHellmanKey dhk = new DiffieHellmanKey();
@@ -737,25 +805,59 @@ namespace CryptographyBusiness
 			return dhk;
 		}
 
+		/// <summary>
+		/// Encrypt a message using the diffie hellman key protocol
+		/// </summary>
+		/// <param name="message">the integer message we want to send</param>
+		/// <param name="prime">the large generated prime that we'll be working within</param>
+		/// <param name="generator">the generator that provides a cyclic group within the defined prime</param>
+		/// <param name="alicePrivate">your private key</param>
+		/// <param name="bobPublic">your recipient's public key</param>
+		/// <returns></returns>
 		public static long DiffieHellmanKeyEncrypt(int message, int prime, int generator, int alicePrivate, int bobPublic)
 		{
+			// get the shared key by simply powering the recipient's public key
 			int sharedSecretKey = (int)FastExponentiationAlgorithm(bobPublic, alicePrivate, prime);
 
+			// hide the message by multiplying the message with the secret shared key
 			return (int)MathMod(BigInteger.Multiply(message, sharedSecretKey), prime);
 		}
 
+		/// <summary>
+		/// Decrypt a message using the diffie hellman key protocol
+		/// </summary>
+		/// <param name="encryptedMsg">the encrypted message from Alice</param>
+		/// <param name="prime">the large generated prime that we'll be working within</param>
+		/// <param name="generator">the generator that provides a cyclic group within the defined prime</param>
+		/// <param name="bobPrivate">your receipient's private key</param>
+		/// <param name="alicePublic">your public key</param>
+		/// <returns></returns>
 		public static int DiffieHellmanKeyDecrypt(long encryptedMsg, int prime, int generator, int bobPrivate, int alicePublic)
 		{
+			// get the shared key by simply powering the your public key with the recipient's private key
 			int sharedSecretKey = (int)FastExponentiationAlgorithm(alicePublic, bobPrivate, prime);
 
+			// retrieve the message by multiplying by the modular inverse of the sharedSecretKey value, which gives the message * 1
 			return (int)MathMod(BigInteger.Multiply(encryptedMsg, ModInverse(sharedSecretKey, prime)), prime);
 		}
 
-		public static int DiffieHellmanKeyHack(long message, int prime, int generator, int alicePublic, int bobPublic)
+		/// <summary>
+		/// Hack a message that is using the diffie helman key protocol.
+		/// We'll be using baby step giant step algorithm to find the private key of the recipient
+		/// </summary>
+		/// <param name="encryptedMsg">the encrypted message from Alice</param>
+		/// <param name="prime">the large generated prime that we'll be working within</param>
+		/// <param name="generator">the generator that provides a cyclic group within the defined prime</param>
+		/// <param name="alicePublic">your public key</param>
+		/// <param name="bobPublic">your recipient's public key</param>
+		/// <returns></returns>
+		public static int DiffieHellmanKeyHack(long encryptedMsg, int prime, int generator, int alicePublic, int bobPublic)
 		{
+			// get bob's private key by getting the discrete log within his public key
 			int bobPrivate = BabyStepGiantStepAlgorithm(bobPublic, generator, prime);
 
-			return DiffieHellmanKeyDecrypt(message, prime, generator, bobPrivate, alicePublic);
+			// simple pass private key within the decrypt function to receive the message
+			return DiffieHellmanKeyDecrypt(encryptedMsg, prime, generator, bobPrivate, alicePublic);
 		}
 
 		#endregion
@@ -763,28 +865,65 @@ namespace CryptographyBusiness
 		#region RSA
 
 		/// <summary>
-		/// TODO: Make sure whoever uses this has a correct e
+		/// Randomly generate the RSA keys
 		/// </summary>
-		/// <param name="message"></param>
-		/// <param name="n"></param>
-		/// <param name="e"></param>
-		/// <returns></returns>
+		/// <param name="n">Large composite number that is the multiplication of two primes (p and q)</param>
+		/// <param name="p">a large prime</param>
+		/// <param name="q">a large prime</param>
+		/// <param name="e">encryption key, which must be relatively prime to the size of p</param>
+		public static void GenerateCompositeRSANumber(out int n, out Int16 p, out Int16 q, out int e)
+		{
+			// since we're bound to int32 for this project, we must generate p and q within Int16
+			p = (Int16)RandomPrimeBlumBlumShub(16);
+			q = (Int16)RandomPrimeBlumBlumShub(16);
+			n = p * q;
+
+			// make sure e is relatively prime to the phi(n)
+			int phiN = (p - 1) * (q - 1);
+			e = AlgorithmManager.RandomRelativelyPrimeNumber(phiN);
+		}
+
+		/// <summary>
+		/// Encrypt a message using the recipient's n and e
+		/// 
+		/// NOTE: It's important that "e" is relatively prime to the size of n!
+		/// </summary>
+		/// <param name="message">the message that needs to be sent to the recipient</param>
+		/// <param name="n">Large composite number that is the multiplication of two primes (p and q)</param>
+		/// <param name="e">encryption key, which must be relatively prime to the size of p</param>
+		/// <returns>The encrypted message</returns>
 		public static int RSAEncrypt(int message, int n, int e)
 		{
 			return (int)FastExponentiationAlgorithm(message, e, n);
 		}
 
+		/// <summary>
+		/// Decrypt a message using the private information of p and q with n and e
+		/// </summary>
+		/// <param name="encryptedMessage">the encrypted message we need to decrypt</param>
+		/// <param name="n">Large composite number that is the multiplication of two primes (p and q)</param>
+		/// <param name="p">large prime number</param>
+		/// <param name="q">large prime number</param>
+		/// <param name="e">encryption key, which must be relatively prime to the size of p</param>
+		/// <returns>the decrypted message</returns>
 		public static int RSADecrypt(int encryptedMessage, int n, int p, int q, int e)
 		{
+			// get phi of n, which will then be used to get the inverse of e mod phiN
 			int phiN = (p - 1) * (q - 1);
-			BigInteger d = ModInverse(e, phiN);
-
-			return (int)FastExponentiationAlgorithm(encryptedMessage, d, n);
+			return (int)FastExponentiationAlgorithm(encryptedMessage, ModInverse(e, phiN), n);
 		}
 
+		/// <summary>
+		/// Hack and decrypt a message by extracting the p and q values from n
+		/// Once p and q are found, we can simply pass the information to the decrypt function
+		/// </summary>
+		/// <param name="encryptedMessage">the encrypted message we need to decrypt</param>
+		/// <param name="n">Large composite number that is the multiplication of two primes (p and q)</param>
+		/// <param name="e">encryption key, which must be relatively prime to the size of p</param>
+		/// <returns>the decrypted message</returns>
 		public static int RSAHack(int encryptedMessage, int n, int e)
 		{
-			// find the factors of "n"
+			// find the factors of "n" using pollard's rho method
 			int p = PollardsRhoMethod(n);
 			int q = n / p;
 
