@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Numerics;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -289,11 +290,10 @@ namespace CryptographyBusiness
 		#region Primitive Root Search Algorithm
 
 		/// <summary>
-		/// TODO: Confirm this works
 		/// </summary>
 		/// <param name="val"></param>
 		/// <returns></returns>
-		public static List<int> PrimitiveRootSearchAlgorithm(int val)
+		public static List<int> PrimitiveRootSearchAlgorithm(int val, int count = 1)
 		{
 			List<int> list = new List<int>();
 
@@ -320,6 +320,9 @@ namespace CryptographyBusiness
 				{
 					//return i;
 					list.Add(i);
+
+					if (count != -1 && list.Count == count)
+						return list;
 				}
 			}
 
@@ -359,19 +362,19 @@ namespace CryptographyBusiness
 			// traverse all options of power of j and store the pair
 			for (int j = 0; j < m; ++j)
 			{
-				table[j] = (int)FastExponentiationAlgorithm(b, j, prime);
+				table[j] = FastExponentiationAlgorithm(b, j, prime);
 				Debug.WriteLine(j + "|" + table[j]);
 			}
 
 			// cache b^(-1 * m) % prime
-			int cachedBPowNegM = (int)FastExponentiationAlgorithm(ModInverse(b, prime), m, prime);
+			long cachedBPowNegM = FastExponentiationAlgorithm(ModInverse(b, prime), m, prime);
 
 			// cache every iteration of (a * cachedBPowNegM) % prime
-			int cachedPowI;
+			long cachedPowI;
 			// traverse every possible i
 			for (int i = 0; i <= m; ++i)
 			{
-				cachedPowI = ((int)FastExponentiationAlgorithm(cachedBPowNegM, i, prime) * a) % prime;
+				cachedPowI = (FastExponentiationAlgorithm(cachedBPowNegM, i, prime) * a) % prime;
 
 				if (cachedPowI < 0)
 				{
@@ -383,7 +386,7 @@ namespace CryptographyBusiness
 				for (int j = 0; j < table.Count; ++j)
 				{
 					// if we find a match for a given i and j, then return i * m + j
-					if (cachedPowI == (int)table[j])
+					if (cachedPowI == (long)table[j])
 					{
 						Console.WriteLine(i + "*" + m + "+" + j);
 						return i * m + j;
@@ -640,20 +643,20 @@ namespace CryptographyBusiness
 
 		#region Blum-Blum-Shub Random Number Generator
 
-		public static Int64 GetRandomPrime(int range)
+		public static int GetRandomPrime(int range)
 		{
-			var val = (Int64)1;
+			var val = (Int32)1;
 
 			while (!MillerRabinOptimal(val))
-				val = LongRandom(2, range); // define a larger range
+				val = (int)LongRandom(2, range);
 
 			return val;
 		}
 
-		public static long BlumBlumShubRandomNumberGenerator()
+		public static int BlumBlumShubRandomNumberGenerator(int bitCount = 32)
 		{
-			var p = GetRandomPrime(9999);
-			var q = GetRandomPrime(9999);
+			var p = GetRandomPrime(Int16.MaxValue);
+			var q = GetRandomPrime(Int16.MaxValue);
 
 			var n = p * q;
 
@@ -662,13 +665,19 @@ namespace CryptographyBusiness
 			// set seed_0
 			long seed = LongRandom(1, n);
 			bits = ((int)(seed % 2)).ToString();
-			for (int i = 1; i < 64; ++i) // cannot use "n" bits cuz... that's way too freaking big
+			// TODO: Make the length of this FOR LOOP 32 somehow
+			for (int i = 1; i < bitCount; ++i) // cannot use "n" bits cuz... that's way too freaking big
 			{
 				seed = (seed * seed) % n; // using s_0 to then get s_1
 				bits += ((int)(seed % 2)).ToString(); // mod s_1
 			}
 
-			return Convert.ToInt64(bits, 2);
+			int number = Convert.ToInt32(bits, 2);
+
+			if (number < 0)
+				number = (number + Int32.MaxValue) % Int32.MaxValue;
+
+			return number;
 		}
 
 		#endregion
@@ -712,16 +721,66 @@ namespace CryptographyBusiness
 
 		#region Diffie Hellman
 
+		public struct DiffieHellmanKey
+		{
+			public int prime;
+			public int generator;
+			public int alicePrivate;
+			public int alicePublic;
+
+			public int bobPrivate;
+			public int bobPublic;
+		}
+
+		public static DiffieHellmanKey DiffieHellmanKeyGenerate(int bitCount)
+		{
+			DiffieHellmanKey dhk = new DiffieHellmanKey();
+			int prime = 1;
+
+			while (!MillerRabinOptimal(prime))
+				prime = BlumBlumShubRandomNumberGenerator(bitCount);
+
+			dhk.prime = prime;
+
+			// TODO: Specify primitive root count
+			dhk.generator = PrimitiveRootSearchAlgorithm(prime, 5)[4];
+
+			dhk.alicePrivate = BlumBlumShubRandomNumberGenerator() % dhk.prime;
+			dhk.alicePublic = (int)FastExponentiationAlgorithm(dhk.generator, dhk.alicePrivate, dhk.prime);
+
+			dhk.bobPrivate = BlumBlumShubRandomNumberGenerator() % dhk.prime;
+			dhk.bobPublic = (int)FastExponentiationAlgorithm(dhk.generator, dhk.bobPrivate, dhk.prime);
+
+			return dhk;
+		}
+
+		private static BigInteger MathMod(BigInteger a, BigInteger b)
+		{
+			return (BigInteger.Abs(a * b) + a) % b;
+		}
+
+		// TODO: Fix encrypting for large numbers!
 		public static long DiffieHellmanKeyEncrypt(int message, int prime, int generator, int alicePrivate, int bobPublic)
 		{
 			int sharedSecretKey = (int)FastExponentiationAlgorithm(bobPublic, alicePrivate, prime);
-			return (message * sharedSecretKey) % prime;
+
+			BigInteger mathMod = MathMod(message * sharedSecretKey, prime);
+
+			int answer = (int)mathMod;
+
+			return answer;
 		}
 
+		// TODO: Fix decrypting for large numbers!
 		public static int DiffieHellmanKeyDecrypt(long encryptedMsg, int prime, int generator, int bobPrivate, int alicePublic)
 		{
 			int sharedSecretKey = (int)FastExponentiationAlgorithm(alicePublic, bobPrivate, prime);
-			return (int)((encryptedMsg % prime) * ModInverse(sharedSecretKey, prime)) % prime;
+
+			BigInteger mathMod = MathMod(encryptedMsg * ModInverse(sharedSecretKey, prime), prime);
+
+			int answer = (int)mathMod;
+
+			return answer; //(int)(encryptedMsg % prime * ModInverse(sharedSecretKey, prime)) % prime;
 		}
 
 		public static int DiffieHellmanKeyHack(long message, int prime, int generator, int alicePublic, int bobPublic)

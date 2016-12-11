@@ -74,6 +74,8 @@
 			this.label21 = new System.Windows.Forms.Label();
 			this._generateOutput = new System.Windows.Forms.TextBox();
 			this.label23 = new System.Windows.Forms.Label();
+			this._generateBitCount = new System.Windows.Forms.TextBox();
+			this.label22 = new System.Windows.Forms.Label();
 			this.SuspendLayout();
 			// 
 			// _encryptSubmit
@@ -188,7 +190,7 @@
 			// _label
 			// 
 			this._label.AutoSize = true;
-			this._label.Location = new System.Drawing.Point(224, 54);
+			this._label.Location = new System.Drawing.Point(230, 54);
 			this._label.Name = "_label";
 			this._label.Size = new System.Drawing.Size(36, 13);
 			this._label.TabIndex = 35;
@@ -468,11 +470,29 @@
 			this.label23.TabIndex = 94;
 			this.label23.Text = "Generate (As Alice)";
 			// 
+			// _generateBitCount
+			// 
+			this._generateBitCount.Location = new System.Drawing.Point(113, 154);
+			this._generateBitCount.Name = "_generateBitCount";
+			this._generateBitCount.Size = new System.Drawing.Size(100, 20);
+			this._generateBitCount.TabIndex = 98;
+			// 
+			// label22
+			// 
+			this.label22.AutoSize = true;
+			this.label22.Location = new System.Drawing.Point(12, 158);
+			this.label22.Name = "label22";
+			this.label22.Size = new System.Drawing.Size(53, 13);
+			this.label22.TabIndex = 99;
+			this.label22.Text = "Bit Count:";
+			// 
 			// DiffieHelmanForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(895, 326);
+			this.Controls.Add(this._generateBitCount);
+			this.Controls.Add(this.label22);
 			this.Controls.Add(this._generate);
 			this.Controls.Add(this.label21);
 			this.Controls.Add(this._generateOutput);
@@ -577,5 +597,7 @@
 		private System.Windows.Forms.Label label21;
 		private System.Windows.Forms.TextBox _generateOutput;
 		private System.Windows.Forms.Label label23;
+		private System.Windows.Forms.TextBox _generateBitCount;
+		private System.Windows.Forms.Label label22;
 	}
 }

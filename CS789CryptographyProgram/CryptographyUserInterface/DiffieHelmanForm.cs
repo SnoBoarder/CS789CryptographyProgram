@@ -37,7 +37,10 @@ namespace CryptographyUserInterface
 
 		private void OnGenerateClick(object sender, EventArgs e)
 		{
-			/*DiffieHellmanKey dhk = AlgorithmManager.DiffieHellmanKeyGenerate();
+			if (_generateBitCount.Text == string.Empty)
+				return;
+
+			DiffieHellmanKey dhk = AlgorithmManager.DiffieHellmanKeyGenerate(Convert.ToInt32(_generateBitCount.Text));
 
 			_generateOutput.Text = "prime: " + dhk.prime + " | generator: " + dhk.generator + " | private: " + dhk.alicePrivate + " | public: " + dhk.alicePublic;
 
@@ -55,7 +58,7 @@ namespace CryptographyUserInterface
 			_hackPrime.Text = dhk.prime.ToString();
 			_hackGenerator.Text = dhk.generator.ToString();
 			_hackAlicePublic.Text = dhk.alicePublic.ToString();
-			_hackBobPublic.Text = dhk.bobPublic.ToString();*/
+			_hackBobPublic.Text = dhk.bobPublic.ToString();
 		}
 
         private void OnEncryptSubmitClick(object sender, EventArgs e)
