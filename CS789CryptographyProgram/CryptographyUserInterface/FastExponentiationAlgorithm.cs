@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Numerics;
 
 namespace CryptographyUserInterface
 {
@@ -50,7 +51,7 @@ namespace CryptographyUserInterface
             if (!ValidateInput())
                 return;
 
-            long answer = AlgorithmManager.FastExponentiationAlgorithm(
+            long answer = (long)AlgorithmManager.FastExponentiationAlgorithm(
                 Convert.ToInt64(_xInput.Text),
                 Convert.ToInt64(_eInput.Text),
                 Convert.ToInt64(_mInput.Text));

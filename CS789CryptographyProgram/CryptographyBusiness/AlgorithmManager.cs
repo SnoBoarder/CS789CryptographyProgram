@@ -10,40 +10,6 @@ namespace CryptographyBusiness
 {
 	public static class AlgorithmManager
 	{
-		#region Mod Inverse
-
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="a"></param>
-		/// <param name="n"></param>
-		/// <returns></returns>
-		public static int ModInverse(int a, int n)
-		{
-			int i = n, v = 0, d = 1;
-
-			while (a > 0)
-			{
-				int t = i / a;
-				int x = a;
-
-				a = i % x;
-				i = x;
-				x = d;
-				d = v - t * x;
-				v = x;
-			}
-
-			v %= n;
-
-			if (v < 0)
-				v = (v + n) % n;
-
-			return v;
-		}
-
-		#endregion
-
 		#region Fast Euclidean Algorithm
 
 		/// <summary>
@@ -261,10 +227,10 @@ namespace CryptographyBusiness
 		/// <param name="e"></param>
 		/// <param name="m"></param>
 		/// <returns></returns>
-		public static long FastExponentiationAlgorithm(long x, long e, long m)
+		public static BigInteger FastExponentiationAlgorithm(BigInteger x, BigInteger e, BigInteger m)
 		{
 			// start out at 1 and build up whenever e is ever odd
-			long answer = 1;
+			BigInteger answer = 1;
 
 			while (e > 0)
 			{
@@ -272,7 +238,7 @@ namespace CryptographyBusiness
 				{
 					// e is odd! subtract one from e and multiply current answer by the current x
 					--e;
-					answer = (answer * x) % m;
+					answer = BigInteger.Multiply(answer, x) % m;
 				}
 
 				// square X mod M
@@ -283,6 +249,21 @@ namespace CryptographyBusiness
 			}
 
 			return answer;
+		}
+
+		#endregion
+
+		#region Mod Inverse
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="a"></param>
+		/// <param name="n"></param>
+		/// <returns></returns>
+		public static BigInteger ModInverse(int a, int n)
+		{
+			return FastExponentiationAlgorithm(a, n - 2, n);
 		}
 
 		#endregion
@@ -367,26 +348,22 @@ namespace CryptographyBusiness
 			}
 
 			// cache b^(-1 * m) % prime
-			long cachedBPowNegM = FastExponentiationAlgorithm(ModInverse(b, prime), m, prime);
+			BigInteger cachedBPowNegM = FastExponentiationAlgorithm(ModInverse(b, prime), m, prime);
 
 			// cache every iteration of (a * cachedBPowNegM) % prime
-			long cachedPowI;
+			BigInteger aBig = new BigInteger(a);
+			BigInteger primeBig = new BigInteger(prime);
+			BigInteger cachedPowI;
 			// traverse every possible i
 			for (int i = 0; i <= m; ++i)
 			{
-				cachedPowI = (FastExponentiationAlgorithm(cachedBPowNegM, i, prime) * a) % prime;
-
-				if (cachedPowI < 0)
-				{
-					// make sure we're in the bounds of 0-prime
-					cachedPowI = (cachedPowI + prime) % prime;
-				}
+				cachedPowI = (FastExponentiationAlgorithm(cachedBPowNegM, i, prime) * aBig) % primeBig;
 
 				// traverse every possible j
 				for (int j = 0; j < table.Count; ++j)
 				{
 					// if we find a match for a given i and j, then return i * m + j
-					if (cachedPowI == (long)table[j])
+					if (cachedPowI == (BigInteger)table[j])
 					{
 						Console.WriteLine(i + "*" + m + "+" + j);
 						return i * m + j;
@@ -399,30 +376,7 @@ namespace CryptographyBusiness
 
 		#endregion
 
-		#region Miller-Rabin Test
-
-		private static RNGCryptoServiceProvider _rng = new RNGCryptoServiceProvider();
-		private static byte[] _uint32Buffer = new byte[4];
-
-		private static long LongRandom(long minValue, long maxValue)
-		{
-			if (minValue > maxValue)
-				throw new ArgumentOutOfRangeException("minValue");
-			if (minValue == maxValue) return minValue;
-			Int64 diff = maxValue - minValue;
-			while (true)
-			{
-				_rng.GetBytes(_uint32Buffer);
-				UInt32 rand = BitConverter.ToUInt32(_uint32Buffer, 0);
-
-				Int64 max = (1 + (Int64)UInt32.MaxValue);
-				Int64 remainder = max % diff;
-				if (rand < max - remainder)
-				{
-					return (Int64)(minValue + (rand % diff));
-				}
-			}
-		}
+		#region Miller-Rabin Test Optimal
 
 		/// <summary>
 		/// http://mjs5.com/2016/02/23/c-miller-rabin-primality-test-class/
@@ -464,7 +418,7 @@ namespace CryptographyBusiness
 			for (var k = 0; k < confidence; ++k)
 			{
 				long a = LongRandom(2, candidate - 1) | 1;
-				long x = ModPow(a, d, candidate);
+				long x = (long)FastExponentiationAlgorithm(a, d, candidate);
 
 				if (x == 1)
 				{
@@ -480,7 +434,7 @@ namespace CryptographyBusiness
 						return true;
 					}
 
-					x = ModPow(x, 2, candidate);
+					x = (long)FastExponentiationAlgorithm(x, 2, candidate);
 				}
 
 				if (x == candidate - 1)
@@ -491,33 +445,9 @@ namespace CryptographyBusiness
 
 			return false;
 		}
+		#endregion
 
-		/// <summary>
-		/// More optimal version, but w/e
-		/// </summary>
-		/// <param name="b"></param>
-		/// <param name="e"></param>
-		/// <param name="m"></param>
-		/// <returns></returns>
-		private static long ModPow(long b, long e, long m)
-		{
-			long lb = b;
-			long le = e;
-			long lm = m;
-			long result = 1;
-
-			while (le > 0)
-			{
-				if ((le & 1) == 1)
-				{
-					result = ((result % lm) * (lb % lm)) % lm;
-				}
-				le >>= 1;
-				lb = ((lb % lm) * (lb % lm)) % lm;
-			}
-
-			return result;
-		}
+		#region Miller-Rabin Test Meh
 
 		public static bool MillerRabinTest(long n, int totalChecks = 3)
 		{
@@ -605,7 +535,7 @@ namespace CryptographyBusiness
 					b = rnd.Next(2, (int)n - 1);
 				}
 
-				long test = FastExponentiationAlgorithm(b, m, n);
+				BigInteger test = FastExponentiationAlgorithm(b, m, n);
 
 				if (test == 1)
 				{
@@ -641,9 +571,36 @@ namespace CryptographyBusiness
 
 		#endregion
 
-		#region Blum-Blum-Shub Random Number Generator
+		#region Random long Number
 
-		public static int GetRandomPrime(int range)
+		private static RNGCryptoServiceProvider _rng = new RNGCryptoServiceProvider();
+		private static byte[] _uint32Buffer = new byte[4];
+
+		private static long LongRandom(long minValue, long maxValue)
+		{
+			if (minValue > maxValue)
+				throw new ArgumentOutOfRangeException("minValue");
+			if (minValue == maxValue) return minValue;
+			Int64 diff = maxValue - minValue;
+			while (true)
+			{
+				_rng.GetBytes(_uint32Buffer);
+				UInt32 rand = BitConverter.ToUInt32(_uint32Buffer, 0);
+
+				Int64 max = (1 + (Int64)UInt32.MaxValue);
+				Int64 remainder = max % diff;
+				if (rand < max - remainder)
+				{
+					return (Int64)(minValue + (rand % diff));
+				}
+			}
+		}
+
+		#endregion
+
+		#region Random Prime Basic
+
+		public static int GetRandomPrimeBasic(int range)
 		{
 			var val = (Int32)1;
 
@@ -653,10 +610,17 @@ namespace CryptographyBusiness
 			return val;
 		}
 
+		#endregion
+
+		#region Blum-Blum-Shub Random Number Generator
+
 		public static int BlumBlumShubRandomNumberGenerator(int bitCount = 32)
 		{
-			var p = GetRandomPrime(Int16.MaxValue);
-			var q = GetRandomPrime(Int16.MaxValue);
+			if (bitCount > 32)
+				bitCount = 32; // cannot have an int32 greater than 32 bits. set it to 32
+
+			var p = GetRandomPrimeBasic(Int16.MaxValue);
+			var q = GetRandomPrimeBasic(Int16.MaxValue);
 
 			var n = p * q;
 
@@ -665,19 +629,27 @@ namespace CryptographyBusiness
 			// set seed_0
 			long seed = LongRandom(1, n);
 			bits = ((int)(seed % 2)).ToString();
-			// TODO: Make the length of this FOR LOOP 32 somehow
 			for (int i = 1; i < bitCount; ++i) // cannot use "n" bits cuz... that's way too freaking big
 			{
 				seed = (seed * seed) % n; // using s_0 to then get s_1
 				bits += ((int)(seed % 2)).ToString(); // mod s_1
 			}
 
-			int number = Convert.ToInt32(bits, 2);
+			return Convert.ToInt32(bits, 2);
+		}
 
-			if (number < 0)
-				number = (number + Int32.MaxValue) % Int32.MaxValue;
+		#endregion
 
-			return number;
+		#region Random Prime Blum-Blum-Shub
+
+		public static int RandomPrimeBlumBlumShub(int bitCount)
+		{
+			int prime = 4;
+
+			while (!MillerRabinOptimal(prime))
+				prime = BlumBlumShubRandomNumberGenerator(bitCount);
+
+			return prime;
 		}
 
 		#endregion
@@ -719,6 +691,21 @@ namespace CryptographyBusiness
 
 		#endregion
 
+		#region BigInteger Math Modulo
+
+		/// <summary>
+		/// Handle modulo of big numbers
+		/// </summary>
+		/// <param name="a"></param>
+		/// <param name="b"></param>
+		/// <returns></returns>
+		private static BigInteger MathMod(BigInteger a, BigInteger b)
+		{
+			return (BigInteger.Abs(a * b) + a) % b;
+		}
+
+		#endregion
+
 		#region Diffie Hellman
 
 		public struct DiffieHellmanKey
@@ -735,15 +722,11 @@ namespace CryptographyBusiness
 		public static DiffieHellmanKey DiffieHellmanKeyGenerate(int bitCount)
 		{
 			DiffieHellmanKey dhk = new DiffieHellmanKey();
-			int prime = 1;
 
-			while (!MillerRabinOptimal(prime))
-				prime = BlumBlumShubRandomNumberGenerator(bitCount);
-
-			dhk.prime = prime;
+			dhk.prime = RandomPrimeBlumBlumShub(bitCount);
 
 			// TODO: Specify primitive root count
-			dhk.generator = PrimitiveRootSearchAlgorithm(prime, 5)[4];
+			dhk.generator = PrimitiveRootSearchAlgorithm(dhk.prime, 5)[4];
 
 			dhk.alicePrivate = BlumBlumShubRandomNumberGenerator() % dhk.prime;
 			dhk.alicePublic = (int)FastExponentiationAlgorithm(dhk.generator, dhk.alicePrivate, dhk.prime);
@@ -754,38 +737,24 @@ namespace CryptographyBusiness
 			return dhk;
 		}
 
-		private static BigInteger MathMod(BigInteger a, BigInteger b)
-		{
-			return (BigInteger.Abs(a * b) + a) % b;
-		}
-
-		// TODO: Fix encrypting for large numbers!
 		public static long DiffieHellmanKeyEncrypt(int message, int prime, int generator, int alicePrivate, int bobPublic)
 		{
 			int sharedSecretKey = (int)FastExponentiationAlgorithm(bobPublic, alicePrivate, prime);
 
-			BigInteger mathMod = MathMod(message * sharedSecretKey, prime);
-
-			int answer = (int)mathMod;
-
-			return answer;
+			return (int)MathMod(BigInteger.Multiply(message, sharedSecretKey), prime);
 		}
 
-		// TODO: Fix decrypting for large numbers!
 		public static int DiffieHellmanKeyDecrypt(long encryptedMsg, int prime, int generator, int bobPrivate, int alicePublic)
 		{
 			int sharedSecretKey = (int)FastExponentiationAlgorithm(alicePublic, bobPrivate, prime);
 
-			BigInteger mathMod = MathMod(encryptedMsg * ModInverse(sharedSecretKey, prime), prime);
-
-			int answer = (int)mathMod;
-
-			return answer; //(int)(encryptedMsg % prime * ModInverse(sharedSecretKey, prime)) % prime;
+			return (int)MathMod(BigInteger.Multiply(encryptedMsg, ModInverse(sharedSecretKey, prime)), prime);
 		}
 
 		public static int DiffieHellmanKeyHack(long message, int prime, int generator, int alicePublic, int bobPublic)
 		{
 			int bobPrivate = BabyStepGiantStepAlgorithm(bobPublic, generator, prime);
+
 			return DiffieHellmanKeyDecrypt(message, prime, generator, bobPrivate, alicePublic);
 		}
 
@@ -808,7 +777,7 @@ namespace CryptographyBusiness
 		public static int RSADecrypt(int encryptedMessage, int n, int p, int q, int e)
 		{
 			int phiN = (p - 1) * (q - 1);
-			int d = ModInverse(e, phiN);
+			BigInteger d = ModInverse(e, phiN);
 
 			return (int)FastExponentiationAlgorithm(encryptedMessage, d, n);
 		}
