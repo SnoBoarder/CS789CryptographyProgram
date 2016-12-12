@@ -1,0 +1,24 @@
+CS789 - Final Project Private Key Info.txt
+
+Session 1:
+private key: 4567890
+message: 1234567
+
+Session 2:
+private key: 98765432
+message: 31415926
+
+Session 3:
+private key: 159264817
+
+Session 5:
+private key: 95162847
+
+Session 7:
+message: 456159
+
+Session 9:
+n: 33615107 | p,q: 6247,5381 | e: 16663337
+
+Session 11:
+n: 298942877 | p,q: 25601,11677 | e: 82345087
