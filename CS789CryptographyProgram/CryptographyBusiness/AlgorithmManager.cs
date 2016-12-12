@@ -357,11 +357,13 @@ namespace CryptographyBusiness
 			for (int j = 0; j < m; ++j)
 			{
 				table[j] = FastExponentiationAlgorithm(b, j, prime);
-				Debug.WriteLine(j + "|" + table[j]);
+				//Console.WriteLine(j + "|" + table[j]);
 			}
 
 			// cache b^(-1 * m) % prime
 			BigInteger cachedBPowNegM = FastExponentiationAlgorithm(ModInverse(b, prime), m, prime);
+
+			//Console.WriteLine("b^(-1 * m) % prime: " + cachedBPowNegM);
 
 			// cache every iteration of (a * cachedBPowNegM) % prime
 			BigInteger aBig = new BigInteger(a);
@@ -372,13 +374,15 @@ namespace CryptographyBusiness
 			{
 				cachedPowI = (FastExponentiationAlgorithm(cachedBPowNegM, i, prime) * aBig) % primeBig;
 
+				//Console.WriteLine("testing for i: " + i + " and a: " + a + " | (b^(-1 * m) * a) % prime: " + cachedPowI);
+
 				// traverse every possible j
 				for (int j = 0; j < table.Count; ++j)
 				{
 					// if we find a match for a given i and j, then return i * m + j
 					if (cachedPowI == (BigInteger)table[j])
 					{
-						Console.WriteLine(i + "*" + m + "+" + j);
+						//Console.WriteLine("Found a match! " + i + "*" + m + "+" + j + " = " + (i * m + j));
 						return i * m + j;
 					}
 				}
@@ -794,7 +798,8 @@ namespace CryptographyBusiness
 			dhk.prime = RandomPrimeBlumBlumShub(bitCount);
 
 			// TODO: Specify primitive root count
-			dhk.generator = PrimitiveRootSearchAlgorithm(dhk.prime, 5)[4];
+			List<int> primitiveRoots = PrimitiveRootSearchAlgorithm(dhk.prime, 10);
+			dhk.generator = primitiveRoots[primitiveRoots.Count - 1];
 
 			dhk.alicePrivate = BlumBlumShubRandomNumberGenerator() % dhk.prime;
 			dhk.alicePublic = (int)FastExponentiationAlgorithm(dhk.generator, dhk.alicePrivate, dhk.prime);
@@ -851,10 +856,13 @@ namespace CryptographyBusiness
 		/// <param name="alicePublic">your public key</param>
 		/// <param name="bobPublic">your recipient's public key</param>
 		/// <returns></returns>
-		public static int DiffieHellmanKeyHack(long encryptedMsg, int prime, int generator, int alicePublic, int bobPublic)
+		public static int DiffieHellmanKeyHack(long encryptedMsg, int prime, int generator, int alicePublic, int bobPublic, out int bobPrivate, out int alicePrivate)
 		{
+			// get alice's private key by getting the discrete log within his public key 
+			alicePrivate = BabyStepGiantStepAlgorithm(alicePublic, generator, prime);
+
 			// get bob's private key by getting the discrete log within his public key
-			int bobPrivate = BabyStepGiantStepAlgorithm(bobPublic, generator, prime);
+			bobPrivate = BabyStepGiantStepAlgorithm(bobPublic, generator, prime);
 
 			// simple pass private key within the decrypt function to receive the message
 			return DiffieHellmanKeyDecrypt(encryptedMsg, prime, generator, bobPrivate, alicePublic);
@@ -921,11 +929,11 @@ namespace CryptographyBusiness
 		/// <param name="n">Large composite number that is the multiplication of two primes (p and q)</param>
 		/// <param name="e">encryption key, which must be relatively prime to the size of p</param>
 		/// <returns>the decrypted message</returns>
-		public static int RSAHack(int encryptedMessage, int n, int e)
+		public static int RSAHack(int encryptedMessage, int n, int e, out int p, out int q)
 		{
 			// find the factors of "n" using pollard's rho method
-			int p = PollardsRhoMethod(n);
-			int q = n / p;
+			p = PollardsRhoMethod(n);
+			q = n / p;
 
 			return RSADecrypt(encryptedMessage, n, p, q, e);
 		}

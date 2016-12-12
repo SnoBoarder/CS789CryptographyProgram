@@ -12,28 +12,28 @@ using static CryptographyBusiness.AlgorithmManager;
 
 namespace CryptographyUserInterface
 {
-    public partial class DiffieHelmanForm : Form
-    {
-        public DiffieHelmanForm()
-        {
-            InitializeComponent();
-        }
+	public partial class DiffieHelmanForm : Form
+	{
+		public DiffieHelmanForm()
+		{
+			InitializeComponent();
+		}
 
-        private void OnKeyPress(object sender, KeyPressEventArgs e)
-        {
-            if (Char.IsDigit(e.KeyChar))
-            {
-                // Digits are OK
-            }
-            else if (e.KeyChar == (char)Keys.Back)
-            {
-                // Backspace key is OK
-            }
-            else
-            {
-                e.Handled = true;
-            }
-        }
+		private void OnKeyPress(object sender, KeyPressEventArgs e)
+		{
+			if (Char.IsDigit(e.KeyChar))
+			{
+				// Digits are OK
+			}
+			else if (e.KeyChar == (char)Keys.Back)
+			{
+				// Backspace key is OK
+			}
+			else
+			{
+				e.Handled = true;
+			}
+		}
 
 		private void OnGenerateClick(object sender, EventArgs e)
 		{
@@ -61,103 +61,107 @@ namespace CryptographyUserInterface
 			_hackBobPublic.Text = dhk.bobPublic.ToString();
 		}
 
-        private void OnEncryptSubmitClick(object sender, EventArgs e)
-        {
-            if (!ValidateEncrypt())
-                return;
+		private void OnEncryptSubmitClick(object sender, EventArgs e)
+		{
+			if (!ValidateEncrypt())
+				return;
 
-            int prime = Convert.ToInt32(_encryptPrime.Text);
-            int generator = Convert.ToInt32(_encryptGenerator.Text);
-            int alicePrivate = Convert.ToInt32(_encryptAlicePrivate.Text);
-            int bobPublic = Convert.ToInt32(_encryptBobPublic.Text);
-            int message = Convert.ToInt32(_encryptMessage.Text);
+			int prime = Convert.ToInt32(_encryptPrime.Text);
+			int generator = Convert.ToInt32(_encryptGenerator.Text);
+			int alicePrivate = Convert.ToInt32(_encryptAlicePrivate.Text);
+			int bobPublic = Convert.ToInt32(_encryptBobPublic.Text);
+			int message = Convert.ToInt32(_encryptMessage.Text);
 
-            _encryptOutput.Text = AlgorithmManager.DiffieHellmanKeyEncrypt(message, prime, generator, alicePrivate, bobPublic).ToString();
-        }
+			_encryptOutput.Text = AlgorithmManager.DiffieHellmanKeyEncrypt(message, prime, generator, alicePrivate, bobPublic).ToString();
+		}
 
-        private void OnDecryptSubmitClick(object sender, EventArgs e)
-        {
-            if (!ValidateDecrypt())
-                return;
+		private void OnDecryptSubmitClick(object sender, EventArgs e)
+		{
+			if (!ValidateDecrypt())
+				return;
 
-            int prime = Convert.ToInt32(_decryptPrime.Text);
-            int generator = Convert.ToInt32(_decryptGenerator.Text);
-            int bobPrivate = Convert.ToInt32(_decryptBobPrivate.Text);
-            int alicePublic = Convert.ToInt32(_decryptAlicePublic.Text);
-            int message = Convert.ToInt32(_decryptEncryptedMessage.Text);
+			int prime = Convert.ToInt32(_decryptPrime.Text);
+			int generator = Convert.ToInt32(_decryptGenerator.Text);
+			int bobPrivate = Convert.ToInt32(_decryptBobPrivate.Text);
+			int alicePublic = Convert.ToInt32(_decryptAlicePublic.Text);
+			int message = Convert.ToInt32(_decryptEncryptedMessage.Text);
 
-            _decryptOutput.Text = AlgorithmManager.DiffieHellmanKeyDecrypt(message, prime, generator, bobPrivate, alicePublic).ToString();
-        }
+			_decryptOutput.Text = AlgorithmManager.DiffieHellmanKeyDecrypt(message, prime, generator, bobPrivate, alicePublic).ToString();
+		}
 
-        private void OnHackSubmitClick(object sender, EventArgs e)
-        {
-            if (!ValidateHack())
-                return;
+		private void OnHackSubmitClick(object sender, EventArgs e)
+		{
+			if (!ValidateHack())
+				return;
 
-            int prime = Convert.ToInt32(_hackPrime.Text);
-            int generator = Convert.ToInt32(_hackGenerator.Text);
-            int alicePublic = Convert.ToInt32(_hackAlicePublic.Text);
-            int bobPublic= Convert.ToInt32(_hackBobPublic.Text);
-            int message = Convert.ToInt32(_hackEncryptedMessage.Text);
+			int prime = Convert.ToInt32(_hackPrime.Text);
+			int generator = Convert.ToInt32(_hackGenerator.Text);
+			int alicePublic = Convert.ToInt32(_hackAlicePublic.Text);
+			int bobPublic = Convert.ToInt32(_hackBobPublic.Text);
+			int encryptedMessage = Convert.ToInt32(_hackEncryptedMessage.Text);
 
-            _hackOutput.Text = AlgorithmManager.DiffieHellmanKeyHack(message, prime, generator, alicePublic, bobPublic).ToString();
-        }
+			int bobPrivate;
+			int alicePrivate;
+			int decryptedMessage = AlgorithmManager.DiffieHellmanKeyHack(encryptedMessage, prime, generator, alicePublic, bobPublic, out bobPrivate, out alicePrivate);
 
-        private bool ValidateEncrypt()
-        {
-            if (_encryptPrime.Text == string.Empty)
-                return false;
+			_hackOutput.Text = "Message: " + decryptedMessage + " | Bob's Private Key: " + bobPrivate + " | Alice's Private Key: " + alicePrivate;
+		}
 
-            if (_encryptGenerator.Text == string.Empty)
-                return false;
+		private bool ValidateEncrypt()
+		{
+			if (_encryptPrime.Text == string.Empty)
+				return false;
 
-            if (_encryptAlicePrivate.Text == string.Empty)
-                return false;
+			if (_encryptGenerator.Text == string.Empty)
+				return false;
 
-            if (_encryptBobPublic.Text == string.Empty)
-                return false;
+			if (_encryptAlicePrivate.Text == string.Empty)
+				return false;
 
-            if (_encryptMessage.Text == string.Empty)
-                return false;
+			if (_encryptBobPublic.Text == string.Empty)
+				return false;
 
-            return true;
-        }
+			if (_encryptMessage.Text == string.Empty)
+				return false;
 
-        private bool ValidateDecrypt()
-        {
-            if (_decryptPrime.Text == string.Empty)
-                return false;
+			return true;
+		}
 
-            if (_decryptGenerator.Text == string.Empty)
-                return false;
+		private bool ValidateDecrypt()
+		{
+			if (_decryptPrime.Text == string.Empty)
+				return false;
 
-            if (_decryptAlicePublic.Text == string.Empty && _decryptBobPrivate.Text == string.Empty)
-                return false;
+			if (_decryptGenerator.Text == string.Empty)
+				return false;
 
-            if (_decryptEncryptedMessage.Text == string.Empty)
-                return false;
+			if (_decryptAlicePublic.Text == string.Empty && _decryptBobPrivate.Text == string.Empty)
+				return false;
 
-            return true;
-        }
+			if (_decryptEncryptedMessage.Text == string.Empty)
+				return false;
 
-        private bool ValidateHack()
-        {
-            if (_hackPrime.Text == string.Empty)
-                return false;
+			return true;
+		}
 
-            if (_hackGenerator.Text == string.Empty)
-                return false;
+		private bool ValidateHack()
+		{
+			if (_hackPrime.Text == string.Empty)
+				return false;
 
-            if (_hackAlicePublic.Text == string.Empty)
-                return false;
+			if (_hackGenerator.Text == string.Empty)
+				return false;
 
-            if (_hackBobPublic.Text == string.Empty)
-                return false;
+			if (_hackAlicePublic.Text == string.Empty)
+				return false;
 
-            if (_hackEncryptedMessage.Text == string.Empty)
-                return false;
+			if (_hackBobPublic.Text == string.Empty)
+				return false;
 
-            return true;
-        }
-    }
+			if (_hackEncryptedMessage.Text == string.Empty)
+				return false;
+
+			return true;
+		}
+	}
 }

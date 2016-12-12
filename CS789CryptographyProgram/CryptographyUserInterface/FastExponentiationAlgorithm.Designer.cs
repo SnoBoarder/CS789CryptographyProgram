@@ -52,7 +52,7 @@
 			// _eInput
 			// 
 			this._eInput.Location = new System.Drawing.Point(134, 14);
-			this._eInput.MaxLength = 4;
+			this._eInput.MaxLength = 999999999;
 			this._eInput.Name = "_eInput";
 			this._eInput.Size = new System.Drawing.Size(54, 20);
 			this._eInput.TabIndex = 1;
