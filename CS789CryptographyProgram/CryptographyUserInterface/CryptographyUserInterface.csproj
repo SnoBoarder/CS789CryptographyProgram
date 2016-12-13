@@ -45,6 +45,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BabyStepGiantStepForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="BabyStepGiantStepForm.Designer.cs">
+      <DependentUpon>BabyStepGiantStepForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="RSAForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -96,6 +102,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="BabyStepGiantStepFOrm.resx">
+      <DependentUpon>BabyStepGiantStepForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="RSAForm.resx">
       <DependentUpon>RSAForm.cs</DependentUpon>
     </EmbeddedResource>

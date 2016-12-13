@@ -255,6 +255,12 @@ namespace CryptographyBusiness
 
 		#region Mod Inverse
 
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="a"></param>
+		/// <param name="n"></param>
+		/// <returns></returns>
 		public static BigInteger ModInverse(BigInteger a, BigInteger n)
 		{
 			BigInteger i = n, v = 0, d = 1;
@@ -284,8 +290,10 @@ namespace CryptographyBusiness
 		#region Primitive Root Search Algorithm
 
 		/// <summary>
+		/// 
 		/// </summary>
 		/// <param name="val"></param>
+		/// <param name="count"></param>
 		/// <returns></returns>
 		public static List<int> PrimitiveRootSearchAlgorithm(int val, int count = 1)
 		{
