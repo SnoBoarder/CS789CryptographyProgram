@@ -143,6 +143,7 @@
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "FastExponentiationAlgorithm";
+			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "FastExponentiationAlgorithm";
 			this.ResumeLayout(false);

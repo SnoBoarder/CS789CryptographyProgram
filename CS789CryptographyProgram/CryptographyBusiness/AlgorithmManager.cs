@@ -8,6 +8,12 @@ using System.Text;
 
 namespace CryptographyBusiness
 {
+	/// <summary>
+	/// Author: Brian Tran
+	/// BU MET CS789 Fall 2016
+	/// 
+	/// Manages all algorithms used within this project.
+	/// </summary>
 	public static class AlgorithmManager
 	{
 		#region Fast Euclidean Algorithm
@@ -72,7 +78,7 @@ namespace CryptographyBusiness
 		}
 
 		/// <summary>
-		/// TODO: Make sure to contain with appropriately defined modulo!
+		/// A more verbose Euclidean algorithm, providing the x_0 and y_0
 		/// </summary>
 		/// <param name="m"></param>
 		/// <param name="n"></param>
@@ -221,7 +227,7 @@ namespace CryptographyBusiness
 		#region Fast Exponentiation Algorithm
 
 		/// <summary>
-		/// 
+		/// Calculate the value to the power of a number mod a number with fast exponentiation algorithm
 		/// </summary>
 		/// <param name="x"></param>
 		/// <param name="e"></param>
@@ -256,7 +262,8 @@ namespace CryptographyBusiness
 		#region Mod Inverse
 
 		/// <summary>
-		/// 
+		/// Gets the modulo inverse of the given number and the number modded
+		/// i.e. (a^-1) % n
 		/// </summary>
 		/// <param name="a"></param>
 		/// <param name="n"></param>
@@ -336,7 +343,10 @@ namespace CryptographyBusiness
 		#region Baby Step Giant Step Algorithm
 
 		/// <summary>
-		/// b^l = a. finding l
+		/// Discrete log algorithm.
+		/// 
+		/// This algorithm finds "L" in the following equation:
+		/// b^l = a. Finding l
 		/// 
 		/// log_b a % prime = l
 		/// 
@@ -404,10 +414,11 @@ namespace CryptographyBusiness
 		#region Miller-Rabin Test Optimal
 
 		/// <summary>
+		/// Tests whether or not a candidate is prime
 		/// </summary>
 		/// <param name="candidate"></param>
 		/// <param name="confidence"></param>
-		/// <returns></returns>
+		/// <returns>true-prime. false-composite</returns>
 		public static bool MillerRabinOptimal(long candidate, int confidence = 3)
 		{
 			switch (candidate)
@@ -473,6 +484,12 @@ namespace CryptographyBusiness
 
 		#region Miller-Rabin Test Meh
 
+		/// <summary>
+		/// A less efficient version of the test purely for learning purposes
+		/// </summary>
+		/// <param name="n"></param>
+		/// <param name="totalChecks"></param>
+		/// <returns></returns>
 		public static bool MillerRabinTest(long n, int totalChecks = 3)
 		{
 			if (n < 2)
@@ -600,6 +617,12 @@ namespace CryptographyBusiness
 		private static RNGCryptoServiceProvider _rng = new RNGCryptoServiceProvider();
 		private static byte[] _uint32Buffer = new byte[4];
 
+		/// <summary>
+		/// Generate a random long
+		/// </summary>
+		/// <param name="minValue"></param>
+		/// <param name="maxValue"></param>
+		/// <returns></returns>
 		private static long LongRandom(long minValue, long maxValue)
 		{
 			if (minValue > maxValue)
@@ -624,6 +647,11 @@ namespace CryptographyBusiness
 
 		#region Random Prime Basic
 
+		/// <summary>
+		/// Get a prime using a basic algorithm
+		/// </summary>
+		/// <param name="range"></param>
+		/// <returns></returns>
 		public static int GetRandomPrimeBasic(int range)
 		{
 			var val = (Int32)1;
@@ -639,7 +667,7 @@ namespace CryptographyBusiness
 		#region Blum-Blum-Shub Random Number Generator
 
 		/// <summary>
-		/// 
+		/// Generate a perfectly random number
 		/// </summary>
 		/// <param name="bitCount"></param>
 		/// <returns></returns>
@@ -673,7 +701,7 @@ namespace CryptographyBusiness
 		}
 
 		/// <summary>
-		/// 
+		/// Getting a prime using the blum blum shub RNG
 		/// </summary>
 		/// <param name="bitCount"></param>
 		/// <returns></returns>
@@ -702,7 +730,7 @@ namespace CryptographyBusiness
 		#region Pollard's Rho Method
 
 		/// <summary>
-		/// 
+		/// The method to find the factors of a given number. Usually used to find the two prime numbers that make up "n"
 		/// </summary>
 		/// <param name="n"></param>
 		/// <param name="xDefault"></param>
@@ -759,17 +787,22 @@ namespace CryptographyBusiness
 
 		#region Random Relatively Prime Number
 
-		public static int RandomRelativelyPrimeNumber(int number)
+		/// <summary>
+		/// Make sure we generate a relatively prime to n
+		/// </summary>
+		/// <param name="n"></param>
+		/// <returns></returns>
+		public static int RandomRelativelyPrimeNumber(int n)
 		{
 			int answer = -1;
 
-			while (answer == -1 || FastEuclideanAlgorithm(answer, number) != 1)
+			while (answer == -1 || FastEuclideanAlgorithm(answer, n) != 1)
 			{
-				answer = BlumBlumShubRandomNumberGenerator() % number;
+				answer = BlumBlumShubRandomNumberGenerator() % n;
 
 				if (answer < 0)
 				{
-					answer = (answer + number) % number;
+					answer = (answer + n) % n;
 				}
 			}
 

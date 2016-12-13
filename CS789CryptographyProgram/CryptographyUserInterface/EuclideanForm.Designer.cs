@@ -128,6 +128,7 @@
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "EuclideanForm";
+			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "EuclideanForm";
 			this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.OnKeyPress);

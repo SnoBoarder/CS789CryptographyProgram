@@ -52,6 +52,18 @@ namespace CryptographyUserInterface
 			dlg.ShowDialog();
 		}
 
+		public void ShowPollardsRhoForm()
+		{
+			PollardsRhoForm dlg = new PollardsRhoForm();
+			dlg.ShowDialog();
+		}
+
+		private void ShowBlumBlumShubForm()
+		{
+			BlumBlumShubRNGForm dlg = new BlumBlumShubRNGForm();
+			dlg.ShowDialog();
+		}
+
 		private void OnEuclideanClick(object sender, EventArgs e)
 		{
 			ShowEuclideanForm();
@@ -85,6 +97,16 @@ namespace CryptographyUserInterface
 		private void OnBabyStepGiantStepClick(object sender, EventArgs e)
 		{
 			ShowBabyStepGiantStepForm();
+		}
+
+		private void OnPollardsRhoClick(object sender, EventArgs e)
+		{
+			ShowPollardsRhoForm();
+		}
+
+		private void OnBlumBlumShubClick(object sender, EventArgs e)
+		{
+			ShowBlumBlumShubForm();
 		}
 	}
 }

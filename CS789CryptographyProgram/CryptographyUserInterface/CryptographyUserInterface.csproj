@@ -51,6 +51,18 @@
     <Compile Include="BabyStepGiantStepForm.Designer.cs">
       <DependentUpon>BabyStepGiantStepForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="BlumBlumShubRNGForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="BlumBlumShubRNGForm.Designer.cs">
+      <DependentUpon>BlumBlumShubRNGForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PollardsRhoForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PollardsRhoForm.Designer.cs">
+      <DependentUpon>PollardsRhoForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="RSAForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -104,6 +116,12 @@
   <ItemGroup>
     <EmbeddedResource Include="BabyStepGiantStepFOrm.resx">
       <DependentUpon>BabyStepGiantStepForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="BlumBlumShubRNGForm.resx">
+      <DependentUpon>BlumBlumShubRNGForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PollardsRhoForm.resx">
+      <DependentUpon>PollardsRhoForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="RSAForm.resx">
       <DependentUpon>RSAForm.cs</DependentUpon>
